@@ -7,15 +7,14 @@ const app = express()
 app.set('view engine', 'pug')
 
 
-app.get('/', function (req, res) {
+app.get('/', async function (req, res) {
 
-  HLTV.getMatches().then((matches) => {
+  var content = {title: 'HAHA EZ'};
+  var matches = await HLTV.getMatches();
 
-    firstMatchOdds = getMatchOdds(matches[0]);
+  content['nextMatchOdds'] = await getMatchOdds(matches[0])
 
-    res.render('index', { title: 'HAHA EZ', matches: firstMatchOdds })
-
-  })
+  res.render('index', content)
 
 })
 

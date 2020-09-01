@@ -17,12 +17,12 @@ async function getMatchOdds(match) {
     var teamsHeadToHead = await getTeamsHeadToHead(resultTeam1, match.team2.id);
     var teamsRanking = await getTeamsRanking(team1Profile, team2Profile);
 
-    var teamsFormRanking = teamsForm.team1;
-    var teamsHeadToHeadRanking = teamsHeadToHead.team1;
-    var teamsRankingRanking = (19 + (teamsRanking.team2Rank - teamsRanking.team1Rank)) / 38;
+    var teamsFormScore = teamsForm.team1;
+    var teamsHeadToHeadScore = teamsHeadToHead.team1;
+    var teamsRankingScore = teamsRanking.team1;
 
-
-    console.log(teamsForm, teamsHeadToHeadRanking, teamsRankingRanking);
+    var actualBettingOdds = 0.5;
+    var ezBetOdds = teamsFormScore * .33 + teamsHeadToHeadScore * .33 + teamsRankingScore * .33;
   }
 
   return 'Hello Friend';
@@ -32,8 +32,8 @@ async function getMatchOdds(match) {
 async function getTeamsForm(resultTeam1, resultTeam2) {
   matchesNum = 15;
 
-  var team1RecentResults = getTeamRecentResults(resultTeam1, matchesNum);
-  var team2RecentResults = getTeamRecentResults(resultTeam2, matchesNum);
+  var team1RecentResults = await getTeamRecentResults(resultTeam1, matchesNum);
+  var team2RecentResults = await getTeamRecentResults(resultTeam2, matchesNum);
 
   var team1Form = (team1RecentResults.wins + team2RecentResults.losses) / (matchesNum * 2);
   var team2Form = (team2RecentResults.wins + team1RecentResults.losses) / (matchesNum * 2);
@@ -90,7 +90,7 @@ async function getTeamsHeadToHead(resultTeam1, team2Id) {
 
 
 async function getTeamsRanking(team1Profile, team2Profile) {
-  return {team1Rank: team1Profile.rank, team2Rank: team2Profile.rank}
+  return {team1: (19 + (team2Profile.rank - team1Profile.rank)) / 38, team2: (19 + (team1Profile.rank - team2Profile.rank)) / 38}
 }
 
 module.exports = getMatchOdds;
