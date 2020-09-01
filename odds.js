@@ -54,7 +54,13 @@ async function getTeamsHeadToHead(res, team2Id) {
 
 
 async function getTeamsRanking(match) {
-  
+  const getTeamHLTVRanking = team => HLTV.getTeamStats({id: team.id});
+
+  var team1Ranking = await getTeamHLTVRanking(match.team1.id);
+  var team2Ranking = await getTeamHLTVRanking(match.team2.id);
+
+  console.log(team1Ranking);
+
 }
 
 module.exports = getMatchOdds;
