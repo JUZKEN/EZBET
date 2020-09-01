@@ -3,18 +3,24 @@ const { HLTV } = require('hltv')
 
 async function getMatchOdds(match) {
 
-  teamsForm = await getTeamsForm(match);
-  teamsHeadToHead = await getTeamsHeadToHead(match);
+  const getResults = team => HLTV.getResults({teamID: team.id});
+
+  var resultTeam1 = await getResults(match.team1);
+  var resultTeam2 = await getResults(match.team2);
+
+  var teamsForm = getTeamsForm(resultTeam1, resultTeam2);
+  var teamsHeadToHead = getTeamsHeadToHead(resultTeam1, match.team2.id);
+  var teamsRanking = getTeamsRanking(match);
 
   return 'Hello Friend';
 }
 
 
-async function getTeamsForm(match) {
+async function getTeamsForm(resultTeam1, resultTeam2) {
   matchesNum = 15;
 
-  var team1RecentResults = await getTeamRecentResults(match.team1, matchesNum);
-  var team2RecentResults = await getTeamRecentResults(match.team2, matchesNum);
+  var team1RecentResults = getTeamRecentResults(resultTeam1, matchesNum);
+  var team2RecentResults = getTeamRecentResults(resultTeam2, matchesNum);
 
   var team1Form = (team1RecentResults.wins + team2RecentResults.losses) / (matchesNum * 2);
   var team2Form = (team2RecentResults.wins + team1RecentResults.losses) / (matchesNum * 2);
@@ -25,10 +31,7 @@ async function getTeamsForm(match) {
 }
 
 
-async function getTeamRecentResults(team, matchesNum) {
-  const getResults = team => HLTV.getResults({teamID: team.id});
-  var res = await getResults(team);
-
+async function getTeamRecentResults(res, matchesNum) {
   var recentResults = {wins: 0, losses: 0}
   for(var i = 0; i < matchesNum; i++ ) {
     result = res[i].result.split(" - ").map(x=>+x); // split result and turn substrings into integers
@@ -39,19 +42,19 @@ async function getTeamRecentResults(team, matchesNum) {
       recentResults['losses']++;
     }
   }
-
   return recentResults;
 }
 
 
-async function getTeamsHeadToHead(match) {
-  const getResults = team => HLTV.getResults({teamID: team.id});
-  var res = await getResults(match.team1);
-
+async function getTeamsHeadToHead(res, team2Id) {
   // TODO: only matches from last 6 months?
-  var headToHeadMatches = res.filter(obj => obj.team2.id == match.team2.id)
+  var headToHeadMatches = res.filter(obj => obj.team2.id == team2Id)
   //console.log(headToHeadMatches)
 }
 
+
+async function getTeamsRanking(match) {
+  
+}
 
 module.exports = getMatchOdds;
