@@ -16,7 +16,13 @@ async function getMatchOdds(match) {
     var teamsForm = await getTeamsForm(resultTeam1, resultTeam2);
     var teamsHeadToHead = await getTeamsHeadToHead(resultTeam1, match.team2.id);
     var teamsRanking = await getTeamsRanking(team1Profile, team2Profile);
-    console.log(teamsRanking);
+
+    var teamsFormRanking = teamsForm.team1;
+    var teamsHeadToHeadRanking = teamsHeadToHead.team1;
+    var teamsRankingRanking = (19 + (teamsRanking.team2Rank - teamsRanking.team1Rank)) / 38;
+
+
+    console.log(teamsForm, teamsHeadToHeadRanking, teamsRankingRanking);
   }
 
   return 'Hello Friend';
@@ -40,7 +46,10 @@ async function getTeamsForm(resultTeam1, resultTeam2) {
 async function getTeamRecentResults(resultTeam1, matchesNum) {
   var recentResults = {wins: 0, losses: 0}
   for(var i = 0; i < matchesNum; i++ ) {
-    result = resultTeam1[i].result.split(" - ").map(x=>+x); // split result and turn substrings into integers
+
+    // split result and turn substrings into integers
+    result = resultTeam1[i].result.split(" - ").map(x=>+x); 
+
     // check if its a win
     result[0] > result[1] ? recentResults['wins']++ : recentResults['losses']++;
   }
@@ -58,7 +67,9 @@ async function getTeamsHeadToHead(resultTeam1, team2Id) {
   if(matchDateDiffInDays < 183) {
     var headToHeadResults = {team1MapWins: 0, team2MapWins: 0}
     for(var i = 0; i < headToHeadMatches.length; i++ ) {
-      result = headToHeadMatches[i].result.split(" - ").map(x=>+x); // split result and turn substrings into integers
+
+      // split result and turn substrings into integers
+      result = headToHeadMatches[i].result.split(" - ").map(x=>+x); 
 
       if( headToHeadMatches[i].format == 'bo1' ) {
         result[0] > result[1] ? headToHeadResults['team1MapWins']++ : headToHeadResults['team2MapWins']++
@@ -79,7 +90,7 @@ async function getTeamsHeadToHead(resultTeam1, team2Id) {
 
 
 async function getTeamsRanking(team1Profile, team2Profile) {
-  return {team1Rank: team1Profile.rank, team2Rank: team2Profile.rank, team1RankingScore: (19 + (team2Profile.rank - team1Profile.rank)) / 38}
+  return {team1Rank: team1Profile.rank, team2Rank: team2Profile.rank}
 }
 
 module.exports = getMatchOdds;
