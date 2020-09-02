@@ -1,0 +1,172 @@
+@import 'bootstrap/bootstrap';
+
+// Screen min-width: 992px
+@include media-breakpoint-up(lg) {
+  .container-fluid {
+    padding-left: $spacer * 2;
+    padding-right: $spacer * 2;
+  }
+}
+
+.ezbet-btn {
+  background: $blue-dark;
+  padding: 10px 26px;
+  border-radius: 50px;
+  color: $white;
+  font-weight: $font-weight-bold;
+  transition: 0.15s ease-in-out;
+  &:hover {
+    color: $white;
+    background: darken($blue-dark, 5%);
+  }
+}
+
+body {
+  user-select: none;
+  overflow: hidden;
+}
+
+#header {
+  border-bottom: 1px solid $blue-light;
+
+  .wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: $spacer * 1.6 0;
+
+    #tabs {
+
+      ul {
+        margin: 0;
+        padding: 0;
+        list-style-type: none;
+
+        li {
+          display: inline-block;
+          font-size: $font-size-base * 1.375;
+
+          &.current {
+            font-weight: $font-weight-bold;
+            a:hover { color: $primary; }
+          }
+
+          a {
+            padding: 0 $spacer * 0.75;
+            transition: 0.15s ease-in-out;
+            &:hover {
+              color: lighten($primary, 40%);
+            }
+          }
+
+        }
+
+      }
+
+    }
+
+  }
+
+}
+
+
+#content {
+  .home-columns > div:last-child {
+    padding-left: $spacer * 2;
+  }
+}
+
+
+#matches {
+  padding-top: $spacer * 2.5;
+
+  > h5 {
+    color: $blue-dark;
+    margin-bottom: $spacer;
+  }
+
+  .match-tease {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    border-radius: 20px;
+    background: $blue-lightest;
+    padding: 18px 20px;
+    margin-bottom: $spacer * 2;
+    box-shadow: 6px 6px 18px 0px rgba(0,0,0,0.16), -6px -6px 18px 0px rgba(255,255,255,1);
+    transition: 0.2s ease-in-out;
+    cursor: pointer;
+
+    &:hover {
+      box-shadow: 8px 8px 20px 0px rgba(0,0,0,0.20), -8px -8px 20px 0px rgba(255,255,255,1);
+    }
+
+    &:before {
+      content: 'vs';
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translateY(-50%) translateX(-50%);
+      font-size: 46px;
+      font-weight: 700;
+      color: $blue-light;
+    }
+
+    &--team {
+      display: flex;
+      align-items: center;
+
+      &:last-child {
+        text-align: right;
+        img {
+          margin-left: 7px;
+          margin-right: 0;
+        }
+      }
+
+      &--info {
+        h5 {
+          margin-bottom: 2px;
+        }
+        span {
+          background-color: $primary;
+          color: $white;
+          font-weight: $font-weight-bold;
+          padding: 1px 5px;
+          border-radius: 7px;
+          font-size: 14px;
+        }
+      }
+
+      img {
+        width: 50px;
+        max-height: 50px;
+        margin-right: 7px;
+      }
+
+    }
+
+    &--date {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateY(-50%) translateX(-50%);
+      font-size: 15px;
+
+      > span {
+        font-weight: $font-weight-bold;
+      }
+
+    }
+
+  }
+
+}
+
+
+#match-detail-wrapper {
+  padding: $spacer * 3 $spacer * 2;
+  height: 100%;
+  border-left: 1px solid $blue-light;
+
+}
