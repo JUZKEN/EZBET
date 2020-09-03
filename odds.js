@@ -1,5 +1,5 @@
 const { HLTV } = require('hltv')
-
+const { exec } = require('child_process');
 
 async function getMatchOdds(match) {
 
@@ -8,7 +8,8 @@ async function getMatchOdds(match) {
   var team2Profile = await getTeam(match.team2);
 
   // check if its a top20 match
-  if( team1Profile.rank <= 20 && team2Profile.rank <= 20 ) {
+  // if( team1Profile.rank <= 20 && team2Profile.rank <= 20 ) {
+  if( true ) { 
     const getResults = team => HLTV.getResults({teamID: team.id});
     var resultTeam1 = await getResults(match.team1);
     var resultTeam2 = await getResults(match.team2);
@@ -21,13 +22,11 @@ async function getMatchOdds(match) {
     var teamsHeadToHeadScore = teamsHeadToHead.team1;
     var teamsRankingScore = teamsRanking.team1;
 
-    var actualBettingOdds = 0.5;
+    var actualBettingOdds = await retrieveGGBetBettingOdds(match.id);
     var ezBetOdds = teamsFormScore * .33 + teamsHeadToHeadScore * .33 + teamsRankingScore * .33;
   }
-
   return 'Hello Friend';
 }
-
 
 async function getTeamsForm(resultTeam1, resultTeam2) {
   matchesNum = 15;
@@ -41,6 +40,21 @@ async function getTeamsForm(resultTeam1, resultTeam2) {
   teamsForm = {team1: team1Form, team2: team2Form}
   return teamsForm;
 }
+
+async function retrieveGGBetBettingOdds(matchId) {
+
+  exec('scrapy runspider C:/Users/Gebruiker/Desktop/EZBETscraper/ezbet_scraper.py -a start_url="https://www.hltv.org/matches/2343612/yeet"', (error, stdout, stderr) => {
+    if (error) {
+      console.error(`exec error: ${error}`);
+      return;
+    }
+    console.log(`stdout: ${stdout}`);
+  });
+  
+  var odds = 1;
+  return odds;
+}
+
 
 
 async function getTeamRecentResults(resultTeam1, matchesNum) {
