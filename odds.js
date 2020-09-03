@@ -62,7 +62,7 @@ async function getTeamRecentResults(resultTeam1, matchesNum) {
   for(var i = 0; i < matchesNum; i++ ) {
 
     // split result and turn substrings into integers
-    result = resultTeam1[i].result.split(" - ").map(x=>+x); 
+    result = resultTeam1[i].result.split(" - ").map(x=>+x);
 
     // check if its a win
     result[0] > result[1] ? recentResults['wins']++ : recentResults['losses']++;
@@ -83,7 +83,7 @@ async function getTeamsHeadToHead(resultTeam1, team2Id) {
     for(var i = 0; i < headToHeadMatches.length; i++ ) {
 
       // split result and turn substrings into integers
-      result = headToHeadMatches[i].result.split(" - ").map(x=>+x); 
+      result = headToHeadMatches[i].result.split(" - ").map(x=>+x);
 
       if( headToHeadMatches[i].format == 'bo1' ) {
         result[0] > result[1] ? headToHeadResults['team1MapWins']++ : headToHeadResults['team2MapWins']++

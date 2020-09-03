@@ -1,8 +1,63 @@
 html
   head
     block head
-      link(rel='stylesheet', href='https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css' integrity='sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO' crossorigin='anonymous')
-      link(rel='stylesheet', href='../css/style.css')
+      link(rel='stylesheet', href='https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,700;1,400;1,700&display=swap')
+      link(rel='stylesheet', href='/css/main.css')
       title= title
   body
     
+    section#header
+      div.container-fluid
+        div.wrapper
+        
+          block header
+            div#tabs
+              ul
+                li.current
+                  a(href='#home') Home
+                li
+                  a(href='#history') History
+                  
+            a.ezbet-btn(href='#') Portfolio
+        
+    section#content
+      div.container-fluid
+        div.wrapper
+          
+          block content
+            div.row.h-100.home-columns
+              div.col-lg-4
+                div#matches
+                  h5 Today
+                  div.match-tease
+                    div.match-tease--team
+                      img(src='/img/liquid.svg')
+                      div.match-tease--team--info
+                        h5 Team Liquid
+                        span 2.30
+                    div.match-tease--date
+                      span 18:00
+                    div.match-tease--team
+                      div.match-tease--team--info
+                        h5 Astralis
+                        span 1.63
+                      img(src='/img/astralis.svg')
+                  div.match-tease
+                    div.match-tease--team
+                      img(src='/img/liquid.svg')
+                      div.match-tease--team--info
+                        h5 Team Liquid
+                        span 2.30
+                    div.match-tease--date
+                      span 18:00
+                    div.match-tease--team
+                      div.match-tease--team--info
+                        h5 Astralis
+                        span 1.63
+                      img(src='/img/astralis.svg')
+                  
+                  
+              div.col-lg-8
+                div#match-detail-wrapper
+                  h2 haha
+                  
