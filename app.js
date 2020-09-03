@@ -2,6 +2,7 @@ const express = require('express')
 const path = require('path');
 const { HLTV } = require('hltv')
 const getMatchOdds = require('./odds')
+const database = require('./database')
 const app = express()
 
 app.use(express.static(path.join(__dirname, 'public')));
@@ -11,7 +12,15 @@ app.get('/', async function (req, res) {
   var content = {title: 'HAHA EZ'};
   var matches = await HLTV.getMatches();
 
-  content['nextMatchOdds'] = await getMatchOdds(matches[0])
+  var matchesBettingData = new Array();
+
+  for(var match in matches) {
+    var matchData = await getMatchOdds(match);
+    matchesBettingData.push(matchData);
+  }
+  content['matchesBettingData'] = matchesBettingData;
+
+  saveMatchesToDatabase(matchesBettingData);
 
   res.render('index', content)
 })

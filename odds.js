@@ -1,5 +1,8 @@
 const { HLTV } = require('hltv')
-const { exec } = require('child_process');
+const util = require('util');
+const exec = util.promisify(require('child_process').exec);
+
+
 
 async function getMatchOdds(match) {
 
@@ -23,10 +26,12 @@ async function getMatchOdds(match) {
     var teamsRankingScore = teamsRanking.team1;
 
     var actualBettingOdds = await retrieveGGBetBettingOdds(match.id);
+    console.log(actualBettingOdds)
     var ezBetOdds = teamsFormScore * .33 + teamsHeadToHeadScore * .33 + teamsRankingScore * .33;
   }
   return 'Hello Friend';
 }
+
 
 async function getTeamsForm(resultTeam1, resultTeam2) {
   matchesNum = 15;
@@ -41,20 +46,17 @@ async function getTeamsForm(resultTeam1, resultTeam2) {
   return teamsForm;
 }
 
+
 async function retrieveGGBetBettingOdds(matchId) {
-
-  exec('scrapy runspider C:/Users/Gebruiker/Desktop/EZBETscraper/ezbet_scraper.py -a start_url="https://www.hltv.org/matches/2343612/yeet"', (error, stdout, stderr) => {
-    if (error) {
-      console.error(`exec error: ${error}`);
-      return;
-    }
-    console.log(`stdout: ${stdout}`);
-  });
+  var responseJsonObj = null;
+  const {stdout, stderr} = await exec('scrapy runspider python-spiders/ezbet_scraper.py -a start_url="https://www.hltv.org/matches/' + matchId + '/yeet"');
   
-  var odds = 1;
-  return odds;
+  responseJsonObj = JSON.parse(stdout.replace(/'/g, '\"'));
+  responseJsonObj.bettingOddsTeamA = parseFloat(responseJsonObj.bettingOddsTeamA);
+  responseJsonObj.bettingOddsTeamB = parseFloat(responseJsonObj.bettingOddsTeamB);
+  
+  return responseJsonObj;
 }
-
 
 
 async function getTeamRecentResults(resultTeam1, matchesNum) {
