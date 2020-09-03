@@ -6,30 +6,37 @@ const exec = util.promisify(require('child_process').exec);
 
 async function getMatchOdds(match) {
 
+  if(typeof(match.team1) == 'undefined' || typeof(match.team2) == 'undefined'){
+    return false;
+  }
+
   const getTeam = team => HLTV.getTeam({id: team.id});
   var team1Profile = await getTeam(match.team1);
   var team2Profile = await getTeam(match.team2);
 
   // check if its a top20 match
-  // if( team1Profile.rank <= 20 && team2Profile.rank <= 20 ) {
-  if( true ) { 
+  if( team1Profile.rank <= 30 && team2Profile.rank <= 30 ) {
+  // if( true ){
     const getResults = team => HLTV.getResults({teamID: team.id});
     var resultTeam1 = await getResults(match.team1);
     var resultTeam2 = await getResults(match.team2);
 
     var teamsForm = await getTeamsForm(resultTeam1, resultTeam2);
-    var teamsHeadToHead = await getTeamsHeadToHead(resultTeam1, match.team2.id);
-    var teamsRanking = await getTeamsRanking(team1Profile, team2Profile);
+    var teamsHeadToHead = getTeamsHeadToHead(resultTeam1, match.team2.id);
+    var teamsRanking = getTeamsRanking(team1Profile, team2Profile);
 
-    var teamsFormScore = teamsForm.team1;
+    var teamsFormScore = await teamsForm.team1;
     var teamsHeadToHeadScore = teamsHeadToHead.team1;
     var teamsRankingScore = teamsRanking.team1;
 
     var actualBettingOdds = await retrieveGGBetBettingOdds(match.id);
-    console.log(actualBettingOdds)
+    if(actualBettingOdds == false) {
+      return false;
+    }
     var ezBetOdds = teamsFormScore * .33 + teamsHeadToHeadScore * .33 + teamsRankingScore * .33;
+    return {"teamFormScore": teamsFormScore, "teamsHeadToHeadScore": teamsHeadToHeadScore, "teamsRankingScore": teamsRankingScore, "actualBettingOdds": actualBettingOdds, "ezBetOdds": ezBetOdds};
   }
-  return 'Hello Friend';
+  return false;
 }
 
 
@@ -39,8 +46,11 @@ async function getTeamsForm(resultTeam1, resultTeam2) {
   var team1RecentResults = await getTeamRecentResults(resultTeam1, matchesNum);
   var team2RecentResults = await getTeamRecentResults(resultTeam2, matchesNum);
 
-  var team1Form = (team1RecentResults.wins + team2RecentResults.losses) / (matchesNum * 2);
-  var team2Form = (team2RecentResults.wins + team1RecentResults.losses) / (matchesNum * 2);
+  var totalChecked = team1RecentResults.wins + team2RecentResults.losses + team2RecentResults.wins + team1RecentResults.losses;
+
+  //todo: this isnt fair. E.g; team 1, 1 match 1 win over team2 15 matches.
+  var team1Form = (team1RecentResults.wins + team2RecentResults.losses) / totalChecked;
+  var team2Form = (team2RecentResults.wins + team1RecentResults.losses) / totalChecked;
 
   teamsForm = {team1: team1Form, team2: team2Form}
   return teamsForm;
@@ -50,31 +60,40 @@ async function getTeamsForm(resultTeam1, resultTeam2) {
 async function retrieveGGBetBettingOdds(matchId) {
   var responseJsonObj = null;
   const {stdout, stderr} = await exec('scrapy runspider python-spiders/ezbet_scraper.py -a start_url="https://www.hltv.org/matches/' + matchId + '/yeet"');
-  
-  responseJsonObj = JSON.parse(stdout.replace(/'/g, '\"'));
-  responseJsonObj.bettingOddsTeamA = parseFloat(responseJsonObj.bettingOddsTeamA);
-  responseJsonObj.bettingOddsTeamB = parseFloat(responseJsonObj.bettingOddsTeamB);
-  
-  return responseJsonObj;
+
+  if(stdout.includes('None')) {
+    return false;
+  } else {
+    responseJsonObj = JSON.parse(stdout.replace(/'/g, '\"'));
+    responseJsonObj.bettingOddsTeamA = parseFloat(responseJsonObj.bettingOddsTeamA);
+    responseJsonObj.bettingOddsTeamB = parseFloat(responseJsonObj.bettingOddsTeamB);
+    
+    return responseJsonObj;
+  }
 }
 
 
 async function getTeamRecentResults(resultTeam1, matchesNum) {
   var recentResults = {wins: 0, losses: 0}
   for(var i = 0; i < matchesNum; i++ ) {
+    if(i < resultTeam1.length){
+      // split result and turn substrings into integers
+      result = resultTeam1[i].result.split(" - ").map(x=>+x);
 
-    // split result and turn substrings into integers
-    result = resultTeam1[i].result.split(" - ").map(x=>+x);
-
-    // check if its a win
-    result[0] > result[1] ? recentResults['wins']++ : recentResults['losses']++;
+      // check if its a win
+      result[0] > result[1] ? recentResults['wins']++ : recentResults['losses']++;
+    }
   }
   return recentResults;
 }
 
 
-async function getTeamsHeadToHead(resultTeam1, team2Id) {
+function getTeamsHeadToHead(resultTeam1, team2Id) {
   var headToHeadMatches = resultTeam1.filter(obj => obj.team2.id == team2Id)
+
+  if(headToHeadMatches.length == 0) {
+    return {"team1": 0.5, "team2": 0.5};
+  }
 
   var matchDateDiffInMS = new Date() - new Date(headToHeadMatches[0].date)
   var matchDateDiffInDays = Math.floor(matchDateDiffInMS/1000/60/60/24);
@@ -99,14 +118,15 @@ async function getTeamsHeadToHead(resultTeam1, team2Id) {
     var team1Form = headToHeadResults['team1MapWins'] / totalMaps;
     var team2Form = headToHeadResults['team2MapWins'] / totalMaps;
 
-    headToHeadForm = {team1: team1Form, team2: team2Form};
-    return headToHeadForm;
+    return {"team1": team1Form, "team2": team2Form};
+  } else {
+    return {"team1": 0.5, "team2": 0.5};
   }
 }
 
 
-async function getTeamsRanking(team1Profile, team2Profile) {
-  return {team1: (19 + (team2Profile.rank - team1Profile.rank)) / 38, team2: (19 + (team1Profile.rank - team2Profile.rank)) / 38}
+function getTeamsRanking(team1Profile, team2Profile) {
+  return {"team1": (19 + (team2Profile.rank - team1Profile.rank)) / 38, "team2": (19 + (team1Profile.rank - team2Profile.rank)) / 38}
 }
 
 module.exports = getMatchOdds;

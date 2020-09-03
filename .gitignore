@@ -1,3 +1,4 @@
 node_modules
 package-lock.json
 python-spiders/__pycache__
+json-dbs/
