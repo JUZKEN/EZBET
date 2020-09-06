@@ -15,11 +15,11 @@ html
             div#tabs
               ul
                 li.current
-                  a(href='#home') Home
+                  a(href='/') Home
                 li
-                  a(href='#history') History
+                  a(href='/history') History
                   
-            a.ezbet-btn(href='#') Portfolio
+            a.ezbet-btn(href='/portfolio') Portfolio
         
     section#content
       div.container-fluid
@@ -29,36 +29,25 @@ html
             div.row.h-100.home-columns
               div.col-lg-4
                 div#matches
-                  h5 Today
-                  div.match-tease
-                    div.match-tease--team
-                      img(src='/img/liquid.svg')
-                      div.match-tease--team--info
-                        h5 Team Liquid
-                        span 2.30
-                    div.match-tease--date
-                      span 18:00
-                    div.match-tease--team
-                      div.match-tease--team--info
-                        h5 Astralis
-                        span 1.63
-                      img(src='/img/astralis.svg')
-                  div.match-tease
-                    div.match-tease--team
-                      img(src='/img/liquid.svg')
-                      div.match-tease--team--info
-                        h5 Team Liquid
-                        span 2.30
-                    div.match-tease--date
-                      span 18:00
-                    div.match-tease--team
-                      div.match-tease--team--info
-                        h5 Astralis
-                        span 1.63
-                      img(src='/img/astralis.svg')
-                  
-                  
+                  block matchList
+                    h5 Today
+                    each val in matchesBettingData               
+                      div.match-tease
+                        div.match-tease--team
+                          img(src=val[0].team1.logo)
+                          div.match-tease--team--info
+                            h5= val[0].team1.name
+                            span= val[1].ezBetOdds.toFixed(2)
+                        div.match-tease--date
+                          - var matchDate = new Date(val[0].date).toLocaleTimeString()
+                          span= matchDate.replace(/:\d+ /, ' ')
+                        div.match-tease--team
+                          div.match-tease--team--info
+                            h5= val[0].team2.name
+                            span= (1 - val[1].ezBetOdds).toFixed(2)
+                          img(src=val[0].team2.logo)
+              
               div.col-lg-8
                 div#match-detail-wrapper
-                  h2 haha
+                  
                   

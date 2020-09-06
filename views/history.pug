@@ -1,0 +1,22 @@
+extends index.pug
+
+
+block matchList
+  h5 History
+  each val, key in history
+    h5= new Date(key)
+    each item in val
+      div.match-tease
+        div.match-tease--team
+          img(src=item.team1.logo)
+          div.match-tease--team--info
+            h5= item.team1.name
+            span= item.bettingData.ezBetOdds.toFixed(2)
+        div.match-tease--date
+          - var matchDate = new Date(item.date).toLocaleTimeString()
+          span= matchDate.replace(/:\d+ /, ' ')
+        div.match-tease--team
+          div.match-tease--team--info
+            h5= item.team2.name
+            span= (1 - item.bettingData.ezBetOdds).toFixed(2)
+          img(src=item.team2.logo)

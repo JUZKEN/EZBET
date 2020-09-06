@@ -16,32 +16,31 @@ async function getMatchOdds(match) {
   const getTeam = team => HLTV.getTeam({id: team.id});
   var team1Profile = await getTeam(match.team1);
   var team2Profile = await getTeam(match.team2);
-
   // check if its a top20 match
-  if( team1Profile.rank <= 20 && team2Profile.rank <= 20 ) {
-  // if( true ){
-    const getResults = team => HLTV.getResults({teamID: team.id});
-    var resultTeam1 = await getResults(match.team1);
-    var resultTeam2 = await getResults(match.team2);
 
-    var teamsForm = await getTeamsForm(resultTeam1, resultTeam2);
-    var teamsHeadToHead = getTeamsHeadToHead(resultTeam1, match.team2.id);
-    var teamsRanking = getTeamsRanking(team1Profile, team2Profile);
+  match.team1.logo = team1Profile.logo;
+  match.team2.logo = team2Profile.logo;
 
-    var teamsFormScore = await teamsForm.team1;
-    var teamsHeadToHeadScore = teamsHeadToHead.team1;
-    var teamsRankingScore = teamsRanking.team1;
+  const getResults = team => HLTV.getResults({teamID: team.id});
+  var resultTeam1 = await getResults(match.team1);
+  var resultTeam2 = await getResults(match.team2);
 
-    console.log('form: ' +teamsFormScore + ', h2h: ' + teamsHeadToHeadScore + ', ranking: ' + teamsRankingScore);
+  var teamsForm = await getTeamsForm(resultTeam1, resultTeam2);
+  var teamsHeadToHead = getTeamsHeadToHead(resultTeam1, match.team2.id);
+  var teamsRanking = getTeamsRanking(team1Profile, team2Profile);
 
-    var actualBettingOdds = await retrieveGGBetBettingOdds(match.id);
-    if(actualBettingOdds == false) {
-      return false;
-    }
-    var ezBetOdds = teamsFormScore * .33 + teamsHeadToHeadScore * .33 + teamsRankingScore * .33;
-    return {"teamFormScore": teamsFormScore, "teamsHeadToHeadScore": teamsHeadToHeadScore, "teamsRankingScore": teamsRankingScore, "actualBettingOdds": actualBettingOdds, "ezBetOdds": ezBetOdds};
+  var teamsFormScore = await teamsForm.team1;
+  var teamsHeadToHeadScore = teamsHeadToHead.team1;
+  var teamsRankingScore = teamsRanking.team1;
+
+  console.log('form: ' +teamsFormScore + ', h2h: ' + teamsHeadToHeadScore + ', ranking: ' + teamsRankingScore);
+
+  var actualBettingOdds = await retrieveGGBetBettingOdds(match.id);
+  if(actualBettingOdds == false) {
+    return false;
   }
-  return false;
+  var ezBetOdds = teamsFormScore * .33 + teamsHeadToHeadScore * .33 + teamsRankingScore * .33;
+  return {match: match, bettingData: {"teamFormScore": teamsFormScore, "teamsHeadToHeadScore": teamsHeadToHeadScore, "teamsRankingScore": teamsRankingScore, "actualBettingOdds": actualBettingOdds, "ezBetOdds": ezBetOdds}};
 }
 
 

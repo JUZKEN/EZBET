@@ -13,26 +13,29 @@ app.set('view engine', 'pug')
 
 
 // ENDPOINTS
-app.get('/', async function (req, res) {
-  var content = {title: 'HAHA EZ'};
-  
+app.get('/', async function (req, res) {  
   var teamsRanking = await HLTV.getTeamRanking();
   app.set('ranking', filterTeamsFromRanking(teamsRanking).slice(0,20));
 
   // current matches
   var matches = await HLTV.getMatches();
   matches = matches.sort(compare_item).filter(filterUsefullMatches);
-  content['matchesBettingData'] = await checkOddsAndWriteMatches(matches);
+  var matchesBettingData = await checkOddsAndWriteMatches(matches);
 
+  // TODO:
+  // var matchesBettingDataHistoryToday = app.get('database').getHistoryToday();
+  // Array.prototype.push.apply(matchesBettingDataHistoryToday, matchesBettingData);
   // previous matches
   await checkAndWriteMatchesOutcomes();
 
+  var content = {title: 'EZBet - Home', matchesBettingData: matchesBettingData};
   res.render('index', content)
 })
 
 
 app.get('/history', async function(req, res) {
-  //todo
+  var content = {title: 'EZBet - History', history: app.get('database').getHistory()};
+  res.render('history', content)
 })
 
 app.get('/portfolio', async function(req, res) {
@@ -68,7 +71,7 @@ function filterTeamsFromRanking(teamsRanking) {
 }
 
 function filterUsefullMatches(match) {
-  if(typeof(match.team1) == 'undefined' || typeof(match.team2) == 'undefined' || match.live) {
+  if(typeof(match.team1) == 'undefined' || typeof(match.team2) == 'undefined' || match.live || app.get('database').isInHistory(match.id)) {
     return false;
   }
   var dateToday = new Date();
@@ -85,15 +88,15 @@ async function checkOddsAndWriteMatches(matches) {
   var nrOfMatches = matches.length > 10 ? 10 : matches.length;
 
   for(var i = 0; i < nrOfMatches; i++) {
-    console.log(matches[i].team1.name + '  vs.  ' + matches[i].team2.name);
-    var bettingData = await getMatchOdds(matches[i]);
+    const {match, bettingData} = await getMatchOdds(matches[i]);
     if(!bettingData) {
       console.log('Couldnt retrieve betting odds for ' + matches[i].team1 + ' vs ' + matches[i].team2);
       console.log('Match Object: ');
       console.log(matches[i]);
       continue;
     } else {
-      matchesBettingData.push([matches[i], bettingData]);
+      matchesBettingData.push([match, bettingData]);
+      console.log(match);
     }
   }
 
