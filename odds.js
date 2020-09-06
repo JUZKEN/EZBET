@@ -1,5 +1,6 @@
 const { HLTV } = require('hltv')
 const util = require('util');
+const { match } = require('assert');
 const exec = util.promisify(require('child_process').exec);
 
 
@@ -10,12 +11,14 @@ async function getMatchOdds(match) {
     return false;
   }
 
+  // this returns almost nothing most of the time??
+  // func getTeam from HLTV is getting timed out after like 5 runs.
   const getTeam = team => HLTV.getTeam({id: team.id});
   var team1Profile = await getTeam(match.team1);
   var team2Profile = await getTeam(match.team2);
 
   // check if its a top20 match
-  if( team1Profile.rank <= 30 && team2Profile.rank <= 30 ) {
+  if( team1Profile.rank <= 20 && team2Profile.rank <= 20 ) {
   // if( true ){
     const getResults = team => HLTV.getResults({teamID: team.id});
     var resultTeam1 = await getResults(match.team1);
@@ -28,6 +31,8 @@ async function getMatchOdds(match) {
     var teamsFormScore = await teamsForm.team1;
     var teamsHeadToHeadScore = teamsHeadToHead.team1;
     var teamsRankingScore = teamsRanking.team1;
+
+    console.log('form: ' +teamsFormScore + ', h2h: ' + teamsHeadToHeadScore + ', ranking: ' + teamsRankingScore);
 
     var actualBettingOdds = await retrieveGGBetBettingOdds(match.id);
     if(actualBettingOdds == false) {
@@ -62,8 +67,10 @@ async function retrieveGGBetBettingOdds(matchId) {
   const {stdout, stderr} = await exec('scrapy runspider python-spiders/ezbet_scraper.py -a start_url="https://www.hltv.org/matches/' + matchId + '/yeet"');
 
   if(stdout.includes('None')) {
+    console.log('No odds found for ' + matchId);
     return false;
   } else {
+    console.log('Got Actual Odds for ' + matchId + ' and found: ' + stdout);
     responseJsonObj = JSON.parse(stdout.replace(/'/g, '\"'));
     responseJsonObj.bettingOddsTeamA = parseFloat(responseJsonObj.bettingOddsTeamA);
     responseJsonObj.bettingOddsTeamB = parseFloat(responseJsonObj.bettingOddsTeamB);
