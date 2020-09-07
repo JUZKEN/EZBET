@@ -1,10 +1,8 @@
 function test() {
     var xhttp = new XMLHttpRequest();
-    xhttp.open("POST", "/portfolio", true);
+    xhttp.open("GET", "/history/2343616", true);
     xhttp.setRequestHeader("Content-type", "application/json; charset=utf-8");
-    var testObj = new Object();
-    testObj.testAttr = 'A Name';
-    xhttp.send(JSON.stringify(testObj));
+    var bla = xhttp.send();
 }
 
 

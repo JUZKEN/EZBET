@@ -1,8 +1,11 @@
-const { HLTV } = require('hltv')
+const { HLTV } = require('hltv');
 const util = require('util');
-const { match } = require('assert');
 const exec = util.promisify(require('child_process').exec);
-
+const Bottleneck = require('bottleneck');
+const limiter = new Bottleneck({
+  maxConcurrent: 1,
+  minTime: 333
+});
 
 
 async function getMatchOdds(match) {
@@ -14,22 +17,21 @@ async function getMatchOdds(match) {
   // this returns almost nothing most of the time??
   // func getTeam from HLTV is getting timed out after like 5 runs.
   const getTeam = team => HLTV.getTeam({id: team.id});
-  var team1Profile = await getTeam(match.team1);
-  var team2Profile = await getTeam(match.team2);
-  // check if its a top20 match
+  var team1Profile = await limiter.schedule(() => getTeam(match.team1));
+  var team2Profile = await limiter.schedule(() => getTeam(match.team2));
 
   match.team1.logo = team1Profile.logo;
   match.team2.logo = team2Profile.logo;
 
   const getResults = team => HLTV.getResults({teamID: team.id});
-  var resultTeam1 = await getResults(match.team1);
-  var resultTeam2 = await getResults(match.team2);
+  var resultTeam1 = await limiter.schedule(() => getResults(match.team1));
+  var resultTeam2 = await limiter.schedule(() => getResults(match.team2));
 
-  var teamsForm = await getTeamsForm(resultTeam1, resultTeam2);
+  var teamsForm = getTeamsForm(resultTeam1, resultTeam2);
   var teamsHeadToHead = getTeamsHeadToHead(resultTeam1, match.team2.id);
   var teamsRanking = getTeamsRanking(team1Profile, team2Profile);
 
-  var teamsFormScore = await teamsForm.team1;
+  var teamsFormScore = teamsForm.team1;
   var teamsHeadToHeadScore = teamsHeadToHead.team1;
   var teamsRankingScore = teamsRanking.team1;
 
@@ -44,11 +46,11 @@ async function getMatchOdds(match) {
 }
 
 
-async function getTeamsForm(resultTeam1, resultTeam2) {
+function getTeamsForm(resultTeam1, resultTeam2) {
   matchesNum = 15;
 
-  var team1RecentResults = await getTeamRecentResults(resultTeam1, matchesNum);
-  var team2RecentResults = await getTeamRecentResults(resultTeam2, matchesNum);
+  var team1RecentResults = getTeamRecentResults(resultTeam1, matchesNum);
+  var team2RecentResults = getTeamRecentResults(resultTeam2, matchesNum);
 
   var totalChecked = team1RecentResults.wins + team2RecentResults.losses + team2RecentResults.wins + team1RecentResults.losses;
 
@@ -79,7 +81,7 @@ async function retrieveGGBetBettingOdds(matchId) {
 }
 
 
-async function getTeamRecentResults(resultTeam1, matchesNum) {
+function getTeamRecentResults(resultTeam1, matchesNum) {
   var recentResults = {wins: 0, losses: 0}
   for(var i = 0; i < matchesNum; i++ ) {
     if(i < resultTeam1.length){

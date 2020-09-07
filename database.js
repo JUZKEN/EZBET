@@ -1,6 +1,12 @@
 var fs = require('fs');
 const util = require('util');
 const { HLTV } = require('hltv');
+const Bottleneck = require('bottleneck');
+const limiter = new Bottleneck({
+  maxConcurrent: 1,
+  minTime: 333
+});
+
 
 const readFile = util.promisify(fs.readFile);
 const dbPaths = ['./json-dbs/history.json', './json-dbs/portfolio.json'];
@@ -66,7 +72,7 @@ class EZBETDatabase {
     for(var i=0; i < historyIds.length; i++) {
       
       if(this.history[historyIds[i]].outcome == null) {
-        var match = await HLTV.getMatch({id: parseInt(historyIds[i])});
+        var match = await limiter.schedule(() => HLTV.getMatch({id: parseInt(historyIds[i])}));
 
         if(typeof(match.winnerTeam) != 'undefined') {
           this.history[historyIds[i]].outcome = match.winnerTeam;
@@ -98,6 +104,19 @@ class EZBETDatabase {
       return {};
     }
   }
+
+  getMatchFromHistory(matchId) {
+    var dateKeys = Object.keys(this.history);
+    for(var i in dateKeys) {
+      
+      var matchIds =  Object.keys(this.history.dateKeys[i]);
+      if(matchIds.includes(matchId)) {
+        return this.history.dateKeys[i].matchId;
+      }
+    }
+    return false;
+  }
+
 }
 
 
