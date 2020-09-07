@@ -8,6 +8,10 @@ const dbPaths = ['./json-dbs/history.json', './json-dbs/portfolio.json'];
 class EZBETDatabase {
 
   constructor() {
+    if(!fs.existsSync('./json-dbs')) {
+      fs.mkdirSync('./json-dbs');
+    }
+
     for(var path in dbPaths) {
       try {
         if (fs.existsSync(dbPaths[path])) {
