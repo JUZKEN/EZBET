@@ -27,12 +27,11 @@ app.get('/', async function (req, res) {
   matches = matches.sort(compare_item).filter(filterUsefullMatches);
   var matchesBettingData = await checkOddsAndWriteMatches(matches);
   // TODO:
-  // var matchesBettingDataHistoryToday = app.get('database').getHistoryToday();
-  // Array.prototype.push.apply(matchesBettingDataHistoryToday, matchesBettingData);
-  // console.log(matchesBettingDataHistoryToday);
+  var matchesBettingDataHistoryToday = app.get('database').getHistoryToday();
+  Array.prototype.push.apply(matchesBettingDataHistoryToday, matchesBettingData);
   await checkAndWriteMatchesOutcomes();
-
-  var content = {title: 'EZBet - Home', matchesBettingData: matchesBettingData};
+  console.log(matchesBettingDataHistoryToday);
+  var content = {title: 'EZBet - Home', matchesBettingData: matchesBettingData, matchesBettingDataHistoryToday: matchesBettingDataHistoryToday};
   res.render('index', content)
 })
 

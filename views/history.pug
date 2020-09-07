@@ -4,7 +4,8 @@ extends index.pug
 block matchList
   h5 History
   each val, key in history
-    h5= new Date(key)
+    - var date = new Date(Number(key))
+    h5= date.getDate() + '-' + (date.getMonth() + 1) + '-' + date.getFullYear()
     each item in val
       div.match-tease
         div.match-tease--team
