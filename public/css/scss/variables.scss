@@ -1,0 +1,56 @@
+// Colors
+$blue-darkest: #131419 !default;
+$blue-dark:    #343640 !default;
+$blue-light: #C7C8D6 !default;
+$blue-lightest: #ECEEF9 !default;
+$primary: $blue-darkest;
+
+// Typography
+$font-family-sans-serif: 'Roboto', -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" !default;
+$font-weight-bold: 700;
+$font-size-base: 1rem !default;
+
+$h1-font-size: $font-size-base * 2.25 !default;
+$h2-font-size: $font-size-base * 1.75 !default;
+$h3-font-size: $font-size-base * 1.5 !default;
+$h4-font-size: $font-size-base * 1.25 !default;
+$h5-font-size: $font-size-base * 1.125 !default;
+$h6-font-size: $font-size-base !default;
+
+// Other
+$spacer: 1rem;
+
+
+// Styling Setup
+body {
+    font-family: $font-family-sans-serif;
+    color: $primary;
+    background-color: $blue-lightest;
+    margin: 0;
+    user-select: none;
+    overflow: hidden;
+}
+
+a {
+    color: $primary;
+    &:hover {
+        text-decoration: none;
+    }
+}
+
+h1, h2, h3, h4, h5, h6 { font-weight: $font-weight-bold; }
+h1 { font-size: $h1-font-size; }
+h2 { font-size: $h2-font-size; }
+h3 { font-size: $h3-font-size; }
+h4 { font-size: $h4-font-size; }
+h5 { font-size: $h5-font-size; }
+h6 { font-size: $h6-font-size; }
+
+
+// Screen min-width: 992px
+@media (min-width: 992px) {
+    .container-fluid {
+      padding-left: $spacer * 2;
+      padding-right: $spacer * 2;
+    }
+  }
