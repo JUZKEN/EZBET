@@ -9,7 +9,6 @@
   "author": "JUZKEN",
   "license": "ISC",
   "dependencies": {
-    "bootstrap": "^4.5.2",
     "bottleneck": "^2.19.5",
     "express": "^4.17.1",
     "hltv": "^2.19.4",

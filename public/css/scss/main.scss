@@ -1,29 +1,16 @@
-@import 'bootstrap/bootstrap';
-
-// Screen min-width: 992px
-@include media-breakpoint-up(lg) {
-  .container-fluid {
-    padding-left: $spacer * 2;
-    padding-right: $spacer * 2;
-  }
-}
+@import 'variables';
 
 .ezbet-btn {
   background: $blue-dark;
   padding: 10px 26px;
   border-radius: 50px;
-  color: $white;
+  color: #fff;
   font-weight: $font-weight-bold;
   transition: 0.15s ease-in-out;
   &:hover {
-    color: $white;
+    color: #fff;
     background: darken($blue-dark, 5%);
   }
-}
-
-body {
-  user-select: none;
-  overflow: hidden;
 }
 
 #header {
@@ -108,7 +95,7 @@ body {
       top: 50%;
       transform: translateY(-50%) translateX(-50%);
       font-size: 46px;
-      font-weight: 700;
+      font-weight: $font-weight-bold;
       color: $blue-light;
     }
 
@@ -130,7 +117,7 @@ body {
         }
         span {
           background-color: $primary;
-          color: $white;
+          color: #fff;
           font-weight: $font-weight-bold;
           padding: 1px 5px;
           border-radius: 7px;
