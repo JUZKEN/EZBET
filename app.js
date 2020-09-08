@@ -3,32 +3,35 @@ const path = require('path');
 const { HLTV } = require('hltv')
 const getMatchOdds = require('./odds')
 const database = require('./database');
-const { match } = require('assert');
 const app = express()
+const Bottleneck = require('bottleneck');
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 app.set('view engine', 'pug')
 
+const limiter = new Bottleneck({
+  maxConcurrent: 1,
+  minTime: 333
+});
+
 
 
 // ENDPOINTS
 app.get('/', async function (req, res) {  
-  var teamsRanking = await HLTV.getTeamRanking();
+  var teamsRanking = await limiter.schedule(() => HLTV.getTeamRanking());
   app.set('ranking', filterTeamsFromRanking(teamsRanking).slice(0,20));
 
   // current matches
-  var matches = await HLTV.getMatches();
+  var matches = await limiter.schedule(() => HLTV.getMatches());
   matches = matches.sort(compare_item).filter(filterUsefullMatches);
   var matchesBettingData = await checkOddsAndWriteMatches(matches);
-
   // TODO:
-  // var matchesBettingDataHistoryToday = app.get('database').getHistoryToday();
-  // Array.prototype.push.apply(matchesBettingDataHistoryToday, matchesBettingData);
-  // previous matches
+  var matchesBettingDataHistoryToday = app.get('database').getHistoryToday();
+  Array.prototype.push.apply(matchesBettingDataHistoryToday, matchesBettingData);
   await checkAndWriteMatchesOutcomes();
-
-  var content = {title: 'EZBet - Home', matchesBettingData: matchesBettingData};
+  console.log(matchesBettingDataHistoryToday);
+  var content = {title: 'EZBet - Home', matchesBettingData: matchesBettingData, matchesBettingDataHistoryToday: matchesBettingDataHistoryToday};
   res.render('index', content)
 })
 
@@ -36,6 +39,10 @@ app.get('/', async function (req, res) {
 app.get('/history', async function(req, res) {
   var content = {title: 'EZBet - History', history: app.get('database').getHistory()};
   res.render('history', content)
+})
+
+app.get('/history/:matchId', async function(req, res) {
+  res.send(app.get('database').getMatchFromHistory(req.params.matchId));
 })
 
 app.get('/portfolio', async function(req, res) {
@@ -88,6 +95,7 @@ async function checkOddsAndWriteMatches(matches) {
   var nrOfMatches = matches.length > 10 ? 10 : matches.length;
 
   for(var i = 0; i < nrOfMatches; i++) {
+    console.log(matches[i]);
     const {match, bettingData} = await getMatchOdds(matches[i]);
     if(!bettingData) {
       console.log('Couldnt retrieve betting odds for ' + matches[i].team1 + ' vs ' + matches[i].team2);

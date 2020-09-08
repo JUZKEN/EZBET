@@ -9,6 +9,7 @@
   "author": "JUZKEN",
   "license": "ISC",
   "dependencies": {
+    "bottleneck": "^2.19.5",
     "express": "^4.17.1",
     "hltv": "^2.19.4",
     "path": "^0.12.7",
