@@ -16,9 +16,9 @@ html
           block header
             div#tabs
               ul
-                li.current
+                li(class=(title === 'Home' ? 'current' : ''))
                   a(href='/') Home
-                li
+                li(class=(title === 'History' ? 'current' : ''))
                   a(href='/history') History
                   
             a.ezbet-btn(href='/portfolio') Portfolio

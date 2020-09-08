@@ -41,7 +41,7 @@ app.get('/history', async function(req, res) {
 })
 
 app.get('/portfolio', async function(req, res) {
-  var content = {title: 'EZBet - Portfolio', portfolio: app.get('database').getPortfolio()};
+  var content = {title: 'Portfolio', portfolio: app.get('database').getPortfolio()};
   res.render('portfolio', content)
 })
 
