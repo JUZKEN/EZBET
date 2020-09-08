@@ -31,7 +31,9 @@ html
               div.col-lg-4
                 div#matches
                   block matchList
-                    h5 Today
+                    h4 Today
+                    if Object.keys(matchesBettingDataHistoryToday).length === 0 && matchesBettingDataHistoryToday.constructor === Object
+                      p No more matches today
                     each val in matchesBettingDataHistoryToday               
                       div.match-tease
                         div.match-tease--team

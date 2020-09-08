@@ -1,9 +1,10 @@
 extends index.pug
 
-
 block matchList
-  h4 History
-  each val, key in history
+  h4 Portfolio
+  if Object.keys(portfolio).length === 0 && portfolio.constructor === Object
+    p Nothing in your portfolio yet!
+  each val, key in portfolio
     - var date = new Date(Number(key))
     h5= date.getDate() + '-' + (date.getMonth() + 1) + '-' + date.getFullYear()
     each item in val

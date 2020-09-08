@@ -25,11 +25,17 @@ function showPortfolioPopUp(matchId) {
 }
 
 function addSelectedMatchToPortfolio(matchId) {
-    // function that reads out the values on the popup,
-    // team selected, odds, value
-    // send and xhttp req to the server
-    // close the popup
-    // reload the page
+    var xhttp = new XMLHttpRequest();
+    xhttp.open("POST", "/portfolio", true);
+    xhttp.setRequestHeader("Content-type", "application/json; charset=utf-8");
+    xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            console.log(JSON.parse(this.responseText));
+        }
+    };
+    var teamName = 'faze';
+    var betAmount = 200;
+    xhttp.send(JSON.stringify({'matchId': matchId, 'teamName': teamName, 'betAmount': betAmount}));
 }
 
 function removeFromPortfolio(matchId) {
@@ -37,5 +43,5 @@ function removeFromPortfolio(matchId) {
     var xhttp = new XMLHttpRequest();
     xhttp.open("DELETE", "/portfolio", true);
     xhttp.setRequestHeader("Content-type", "application/json; charset=utf-8");
-    xhttp.send(JSON.stringify(matchId));
+    xhttp.send(JSON.stringify({'matchId': matchId}));
 }

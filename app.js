@@ -46,21 +46,18 @@ app.get('/history', async function(req, res) {
 // })
 
 app.get('/portfolio', async function(req, res) {
-  var content = {title: 'EZBet - Portfolio', history: app.get('database').getPortfolio()};
+  var content = {title: 'EZBet - Portfolio', portfolio: app.get('database').getPortfolio()};
   res.render('portfolio', content)
 })
 
 
 app.post('/portfolio', async function(req, res) {
-  // add the portfolio data to the portfolio db
-  // req.body contains an object with bet data and team chose for X amount
-  console.log(req.body);
+  var data = req.body;
+  app.get('database').addMatchToPortfolio(data.matchId, data.teamName, data.betAmount);
 })
 
 app.delete('/portfolio', async function(req, res) {
-  // delete the matchId from the portfolio db
-  // req.body contains matchId
-  console.log(req.body);
+  app.get('database').removeMatchFromPortfolio(req.body.matchId);
 })
 
 
