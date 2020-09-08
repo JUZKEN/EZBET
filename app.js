@@ -25,9 +25,9 @@ app.get('/', async function (req, res) {
   // current matches
   var matches = await limiter.schedule(() => HLTV.getMatches());
   matches = matches.sort(compare_item).filter(filterUsefullMatches);
-  await checkOddsAndWriteMatches(matches);
+  await checkOddsAndWriteMatches(matches, app.get('ranking'));
   // TODO:
-  var matchesBettingDataHistoryToday = app.get('database').getHistoryToday();
+  var matchesBettingDataHistoryToday = app.get('database').getMatchesFromToday();
   await checkAndWriteMatchesOutcomes();
   console.log(matchesBettingDataHistoryToday);
   var content = {title: 'EZBet - Home', matchesBettingDataHistoryToday: matchesBettingDataHistoryToday};
@@ -40,12 +40,14 @@ app.get('/history', async function(req, res) {
   res.render('history', content)
 })
 
-app.get('/history/:matchId', async function(req, res) {
-  res.send(app.get('database').getMatchFromHistory(req.params.matchId));
-})
+// app.get('/history/:matchId', async function(req, res) {
+//   console.log(req.params.matchId);
+//   res.send(app.get('database').getMatchFromHistory(req.params.matchId));
+// })
 
 app.get('/portfolio', async function(req, res) {
-  //todo
+  var content = {title: 'EZBet - Portfolio', history: app.get('database').getPortfolio()};
+  res.render('portfolio', content)
 })
 
 
@@ -80,6 +82,9 @@ function filterUsefullMatches(match) {
   if(typeof(match.team1) == 'undefined' || typeof(match.team2) == 'undefined' || match.live || app.get('database').isInHistory(match.id)) {
     return false;
   }
+  if(match.format !== 'bo3') {
+    return false;
+  }
   var dateToday = new Date();
   dateToday.setDate(dateToday.getDate() + 2);
   if(new Date(match.date) > dateToday) {
@@ -89,7 +94,7 @@ function filterUsefullMatches(match) {
 }
 
 
-async function checkOddsAndWriteMatches(matches) {
+async function checkOddsAndWriteMatches(matches, ranking) {
   var matchesBettingData = new Array();
   var nrOfMatches = matches.length > 10 ? 10 : matches.length;
 
@@ -102,6 +107,8 @@ async function checkOddsAndWriteMatches(matches) {
       console.log(matches[i]);
       continue;
     } else {
+      match.team1.rank = ranking.indexOf(match.team1.name) + 1;
+      match.team2.rank = ranking.indexOf(match.team2.name) + 1;
       matchesBettingData.push([match, bettingData]);
       console.log(match);
     }

@@ -32,24 +32,22 @@ html
                 div#matches
                   block matchList
                     h5 Today
-                    each val in matchesBettingData               
+                    each val in matchesBettingDataHistoryToday               
                       div.match-tease
                         div.match-tease--team
-                          img(src=val[0].team1.logo)
+                          img(src=val.team1.logo)
                           div.match-tease--team--info
-                            h5= val[0].team1.name
-                            span= val[1].ezBetOdds.toFixed(2)
+                            h5= val.team1.name
+                            span= val.bettingData.ezBetOdds.toFixed(2)
                         div.match-tease--date
-                          - var matchDate = new Date(val[0].date).toLocaleTimeString()
+                          - var matchDate = new Date(val.date).toLocaleTimeString()
                           span= matchDate.replace(/:\d+ /, ' ')
                         div.match-tease--team
                           div.match-tease--team--info
-                            h5= val[0].team2.name
-                            span= (1 - val[1].ezBetOdds).toFixed(2)
-                          img(src=val[0].team2.logo)
+                            h5= val.team2.name
+                            span= (1 - val.bettingData.ezBetOdds).toFixed(2)
+                          img(src=val.team2.logo)
 
               
               div.col-lg-8
                 div#match-detail-wrapper
-                  
-                  

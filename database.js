@@ -94,12 +94,25 @@ class EZBETDatabase {
     return this.history;
   }
 
+  getPortfolio() {
+    return this.portfolio;
+  }
+
   // TODO: fix time comparison
   // fix formatting
-  getHistoryToday() {
+  getMatchesFromToday() {
     var today = new Date().setHours(0,0,0,0).toString();
     if(Object.keys(this.history).includes(today)) {
-      return this.history[today];
+
+      var retObj = {};
+      var dateKeys = Object.keys(this.history[today]);
+      for(var i in dateKeys) {
+        if(this.history[today][dateKeys[i]].date > new Date()) {
+          retObj[dateKeys[i]] = this.history[today][dateKeys[i]];
+        }
+      }
+
+      return retObj;
     } else {
       return {};
     }
@@ -109,9 +122,9 @@ class EZBETDatabase {
     var dateKeys = Object.keys(this.history);
     for(var i in dateKeys) {
       
-      var matchIds =  Object.keys(this.history.dateKeys[i]);
+      var matchIds =  Object.keys(this.history[dateKeys[i]]);
       if(matchIds.includes(matchId)) {
-        return this.history.dateKeys[i].matchId;
+        return this.history[dateKeys[i]][matchId];
       }
     }
     return false;

@@ -1,8 +1,13 @@
 function test() {
     var xhttp = new XMLHttpRequest();
-    xhttp.open("GET", "/history/2343616", true);
+    xhttp.open("GET", "/history/2343641", true);
     xhttp.setRequestHeader("Content-type", "application/json; charset=utf-8");
-    var bla = xhttp.send();
+    xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+          console.log(JSON.parse(this.responseText));
+        }
+      };
+    xhttp.send();
 }
 
 
