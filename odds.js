@@ -73,8 +73,8 @@ async function retrieveGGBetBettingOdds(matchId) {
   } else {
     console.log('Got Actual Odds for ' + matchId + ' and found: ' + stdout);
     responseJsonObj = JSON.parse(stdout.replace(/'/g, '\"'));
-    responseJsonObj.bettingOddsTeamA = parseFloat(responseJsonObj.bettingOddsTeamA);
-    responseJsonObj.bettingOddsTeamB = parseFloat(responseJsonObj.bettingOddsTeamB);
+    responseJsonObj.bettingOddsTeam1 = parseFloat(responseJsonObj.bettingOddsTeam1);
+    responseJsonObj.bettingOddsTeam2 = parseFloat(responseJsonObj.bettingOddsTeam2);
     
     return responseJsonObj;
   }

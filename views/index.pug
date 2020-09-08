@@ -33,6 +33,8 @@ html
                 div#match-list
                   block matchList
                     h5 Today
+                    if Object.keys(matchesBettingDataHistoryToday).length === 0 && matchesBettingDataHistoryToday.constructor === Object
+                      p No more matches today
                     each match in matchesBettingDataHistoryToday
                       div(class='match-tease' data-matchid=`${match.matchID}` onclick='showMatchDetails('+`${match.matchID}`+')')
                         div.match-tease--team

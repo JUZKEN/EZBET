@@ -66,6 +66,10 @@ class EZBETDatabase {
     fs.writeFileSync(dbPaths[0], JSON.stringify(this.history, null, 4));
   }
 
+  savePortfolio() {
+    console.log('Saving Portfolio DB.');
+    fs.writeFileSync(dbPaths[1], JSON.stringify(this.portfolio, null, 4));
+  }
 
   async checkAndWriteMatchesOutComes() {
     var historyIds = Object.keys(this.history);
@@ -94,12 +98,51 @@ class EZBETDatabase {
     return this.history;
   }
 
-  // TODO: fix time comparison
-  // fix formatting
-  getHistoryToday() {
+  getPortfolio() {
+    return this.portfolio;
+  }
+
+  addMatchToPortfolio(matchId, teamName, betAmount) {
+    var match = this.getMatchFromHistory(matchId);
+    match.betOnTeam = teamName;
+    match.betAmount = parseInt(betAmount);
+    var date = new Date(match.date).setHours(0,0,0,0).toString();
+    if(Object.keys(this.portfolio).includes(date)) {
+      this.portfolio[date][matchId] = match;
+    } else {
+      this.portfolio[date] = new Object();
+      this.portfolio[date][matchId] = match;
+    }
+    this.savePortfolio();
+  }
+
+  removeMatchFromPortfolio(matchId) {
+    var dateKeys = Object.keys(this.portfolio);
+    var matchKey = matchId.toString();
+    for(var i in dateKeys) {
+      if(Object.keys(this.portfolio[dateKeys[i]]).includes(matchKey)) {
+        delete this.portfolio[dateKeys[i]][matchKey];
+        if(Object.keys(this.portfolio[dateKeys[i]]).length === 0 && this.portfolio[dateKeys[i]].constructor === Object) {
+          delete this.portfolio[dateKeys[i]];
+        }
+      }
+    }
+    this.savePortfolio();
+  }
+
+
+  getMatchesFromToday() {
     var today = new Date().setHours(0,0,0,0).toString();
     if(Object.keys(this.history).includes(today)) {
-      return this.history[today];
+
+      var retObj = {};
+      var dateKeys = Object.keys(this.history[today]);
+      for(var i in dateKeys) {
+        if(this.history[today][dateKeys[i]].date > new Date()) {
+          retObj[dateKeys[i]] = this.history[today][dateKeys[i]];
+        }
+      }
+      return retObj;
     } else {
       return {};
     }
@@ -109,14 +152,14 @@ class EZBETDatabase {
     var dateKeys = Object.keys(this.history);
     for(var i in dateKeys) {
       
-      var matchIds =  Object.keys(this.history.dateKeys[i]);
-      if(matchIds.includes(matchId)) {
-        return this.history.dateKeys[i].matchId;
+      var matchIds =  Object.keys(this.history[dateKeys[i]]);
+      var matchIdStr = matchId.toString();
+      if(matchIds.includes(matchIdStr)) {
+        return this.history[dateKeys[i]][matchIdStr];
       }
     }
     return false;
   }
-
 }
 
 

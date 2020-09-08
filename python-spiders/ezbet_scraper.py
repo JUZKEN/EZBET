@@ -10,7 +10,7 @@ class HLTVSpider(scrapy.Spider):
         self.start_urls = [kwargs.get('start_url')]
 
     def parse(self, response):
-        odds = {'bettingOddsTeamA': response.xpath('//table[1]//tr[3]//td[2]//a//text()').get(), 'bettingOddsTeamB': response.xpath('//table[1]//tr[3]//td[4]//a//text()').get()}
+        odds = {'bettingOddsTeam1': response.xpath('//table[1]//tr[3]//td[2]//a//text()').get(), 'bettingOddsTeam2': response.xpath('//table[1]//tr[3]//td[4]//a//text()').get()}
         print(odds)
         yield odds
 

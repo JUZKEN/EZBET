@@ -20,14 +20,14 @@ const limiter = new Bottleneck({
 // ENDPOINTS
 app.get('/', async function (req, res) {  
   var teamsRanking = await limiter.schedule(() => HLTV.getTeamRanking());
-  app.set('ranking', filterTeamsFromRanking(teamsRanking).slice(0,20));
+  app.set('ranking', teamsRanking.map(x => x.team.name).slice(0,20));
 
   // current matches
   var matches = await limiter.schedule(() => HLTV.getMatches());
   matches = matches.sort(compare_item).filter(filterUsefullMatches);
-  await checkOddsAndWriteMatches(matches);
+  await checkOddsAndWriteMatches(matches, app.get('ranking'));
   // TODO:
-  var matchesBettingDataHistoryToday = app.get('database').getHistoryToday();
+  var matchesBettingDataHistoryToday = app.get('database').getMatchesFromToday();
   await checkAndWriteMatchesOutcomes();
   console.log(matchesBettingDataHistoryToday);
   var content = {title: 'Home', matchesBettingDataHistoryToday: matchesBettingDataHistoryToday};
@@ -40,25 +40,19 @@ app.get('/history', async function(req, res) {
   res.render('history', content)
 })
 
-app.get('/history/:matchId', async function(req, res) {
-  res.send(app.get('database').getMatchFromHistory(req.params.matchId));
-})
-
 app.get('/portfolio', async function(req, res) {
-  //todo
+  var content = {title: 'EZBet - Portfolio', portfolio: app.get('database').getPortfolio()};
+  res.render('portfolio', content)
 })
 
 
 app.post('/portfolio', async function(req, res) {
-  // add the portfolio data to the portfolio db
-  // req.body contains an object with bet data and team chose for X amount
-  console.log(req.body);
+  var data = req.body;
+  app.get('database').addMatchToPortfolio(data.matchId, data.teamName, data.betAmount);
 })
 
 app.delete('/portfolio', async function(req, res) {
-  // delete the matchId from the portfolio db
-  // req.body contains matchId
-  console.log(req.body);
+  app.get('database').removeMatchFromPortfolio(req.body.matchId);
 })
 
 
@@ -70,14 +64,14 @@ app.listen(3000, function() {
 
 
 
-
 // TOP-LEVEL FUNCTIONALITY
-function filterTeamsFromRanking(teamsRanking) {
-  return teamsRanking.map(x => x.team.name);
-}
+
 
 function filterUsefullMatches(match) {
   if(typeof(match.team1) == 'undefined' || typeof(match.team2) == 'undefined' || match.live || app.get('database').isInHistory(match.id)) {
+    return false;
+  }
+  if(match.format !== 'bo3') {
     return false;
   }
   var dateToday = new Date();
@@ -89,7 +83,7 @@ function filterUsefullMatches(match) {
 }
 
 
-async function checkOddsAndWriteMatches(matches) {
+async function checkOddsAndWriteMatches(matches, ranking) {
   var matchesBettingData = new Array();
   var nrOfMatches = matches.length > 10 ? 10 : matches.length;
 
@@ -102,6 +96,8 @@ async function checkOddsAndWriteMatches(matches) {
       console.log(matches[i]);
       continue;
     } else {
+      match.team1.rank = ranking.indexOf(match.team1.name) + 1;
+      match.team2.rank = ranking.indexOf(match.team2.name) + 1;
       matchesBettingData.push([match, bettingData]);
       console.log(match);
     }
