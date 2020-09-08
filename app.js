@@ -30,13 +30,13 @@ app.get('/', async function (req, res) {
   var matchesBettingDataHistoryToday = app.get('database').getHistoryToday();
   await checkAndWriteMatchesOutcomes();
   console.log(matchesBettingDataHistoryToday);
-  var content = {title: 'EZBet - Home', matchesBettingDataHistoryToday: matchesBettingDataHistoryToday};
+  var content = {title: 'Home', matchesBettingDataHistoryToday: matchesBettingDataHistoryToday};
   res.render('index', content)
 })
 
 
 app.get('/history', async function(req, res) {
-  var content = {title: 'EZBet - History', history: app.get('database').getHistory()};
+  var content = {title: 'History', history: app.get('database').getHistory()};
   res.render('history', content)
 })
 

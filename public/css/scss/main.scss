@@ -64,7 +64,7 @@
 }
 
 
-#matches {
+#match-list {
   padding-top: $spacer * 2.5;
 
   > h5 {
@@ -84,7 +84,7 @@
     transition: 0.2s ease-in-out;
     cursor: pointer;
 
-    &:hover {
+    &:hover, &.active {
       box-shadow: 8px 8px 20px 0px rgba(0,0,0,0.20), -8px -8px 20px 0px rgba(255,255,255,1);
     }
 
@@ -152,8 +152,41 @@
 
 
 #match-detail-wrapper {
+  position: relative;
   padding: $spacer * 3 $spacer * 2;
   height: 100%;
   border-left: 1px solid $blue-light;
+
+  .match-detail {
+    position: absolute;
+    width: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    visibility: hidden;
+    padding: $spacer * 2 $spacer * 2.5;
+    transition: 0.15s ease-in-out;
+
+    &.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    &--head {
+
+      &--info {
+        h5 {
+          margin-bottom: 0;
+        }
+      }
+      
+      img {
+        width: 200px;
+        margin-bottom: 5px;
+      }
+
+    }
+
+  }
 
 }

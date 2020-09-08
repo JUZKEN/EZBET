@@ -4,8 +4,9 @@ html
       link(rel='stylesheet', href='https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css' integrity='sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO' crossorigin='anonymous')
       link(rel='stylesheet', href='/css/main.css')
       link(rel='stylesheet', href='https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,700;1,400;1,700&display=swap')
+      script(src='https://code.jquery.com/jquery-3.5.1.min.js' integrity='sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=' crossorigin='anonymous')
       script(src='/js/client.js')
-      title= title
+      title EZBET | #{title}
   body
     
     section#header
@@ -29,27 +30,40 @@ html
           block content
             div.row.h-100.home-columns
               div.col-lg-4
-                div#matches
+                div#match-list
                   block matchList
                     h5 Today
-                    each val in matchesBettingData               
-                      div.match-tease
+                    each match in matchesBettingDataHistoryToday
+                      div(class='match-tease' data-matchid=`${match.matchID}` onclick='showMatchDetails('+`${match.matchID}`+')')
                         div.match-tease--team
-                          img(src=val[0].team1.logo)
+                          img(src=match.team1.logo)
                           div.match-tease--team--info
-                            h5= val[0].team1.name
-                            span= val[1].ezBetOdds.toFixed(2)
+                            h5= match.team1.name
+                            span= match.bettingData.ezBetOdds.toFixed(2)
                         div.match-tease--date
-                          - var matchDate = new Date(val[0].date).toLocaleTimeString()
+                          - var matchDate = new Date(match.date).toLocaleTimeString()
                           span= matchDate.replace(/:\d+ /, ' ')
                         div.match-tease--team
                           div.match-tease--team--info
-                            h5= val[0].team2.name
-                            span= (1 - val[1].ezBetOdds).toFixed(2)
-                          img(src=val[0].team2.logo)
+                            h5= match.team2.name
+                            span= (1 - match.bettingData.ezBetOdds).toFixed(2)
+                          img(src=match.team2.logo)
 
               
               div.col-lg-8
                 div#match-detail-wrapper
-                  
+                  block matchDetail
+                    each match in matchesBettingDataHistoryToday
+                      div(class='match-detail' data-matchid=`${match.matchID}`)
+                        div.match-detail--head.row.justify-content-center.text-center
+                          div.col-md-4
+                            img(src=match.team1.logo)
+                            h3= match.team1.name
+                          div.match-detail--head--info.col-md-3
+                            h5 Today
+                            - var matchDate = new Date(match.date).toLocaleTimeString()
+                            h1= matchDate.replace(/:\d+ /, ' ')
+                          div.col-md-4
+                            img(src=match.team2.logo)
+                            h3= match.team2.name
                   

@@ -1,8 +1,25 @@
+
+$(document).ready(function() {
+    
+    if( $('#match-detail-wrapper').html().length > 0 ) {
+        firstMatchId = $('#match-detail-wrapper >:first-child').data('matchid');
+        showMatchDetails(firstMatchId);
+    }
+
+});
+
+
 function test() {
     var xhttp = new XMLHttpRequest();
     xhttp.open("GET", "/history/2343616", true);
     xhttp.setRequestHeader("Content-type", "application/json; charset=utf-8");
     var bla = xhttp.send();
+}
+
+
+function showMatchDetails(matchId) {
+    $('.match-detail, .match-tease').removeClass('active');
+    $('.match-detail[data-matchid='+matchId+'], .match-tease[data-matchid='+matchId+']').addClass('active');
 }
 
 
