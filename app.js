@@ -25,13 +25,12 @@ app.get('/', async function (req, res) {
   // current matches
   var matches = await limiter.schedule(() => HLTV.getMatches());
   matches = matches.sort(compare_item).filter(filterUsefullMatches);
-  var matchesBettingData = await checkOddsAndWriteMatches(matches);
+  await checkOddsAndWriteMatches(matches);
   // TODO:
   var matchesBettingDataHistoryToday = app.get('database').getHistoryToday();
-  Array.prototype.push.apply(matchesBettingDataHistoryToday, matchesBettingData);
   await checkAndWriteMatchesOutcomes();
   console.log(matchesBettingDataHistoryToday);
-  var content = {title: 'EZBet - Home', matchesBettingData: matchesBettingData, matchesBettingDataHistoryToday: matchesBettingDataHistoryToday};
+  var content = {title: 'EZBet - Home', matchesBettingDataHistoryToday: matchesBettingDataHistoryToday};
   res.render('index', content)
 })
 
