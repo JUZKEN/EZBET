@@ -20,7 +20,7 @@ const limiter = new Bottleneck({
 // ENDPOINTS
 app.get('/', async function (req, res) {  
   var teamsRanking = await limiter.schedule(() => HLTV.getTeamRanking());
-  app.set('ranking', filterTeamsFromRanking(teamsRanking).slice(0,20));
+  app.set('ranking', teamsRanking.map(x => x.team.name).slice(0,20));
 
   // current matches
   var matches = await limiter.schedule(() => HLTV.getMatches());
@@ -39,11 +39,6 @@ app.get('/history', async function(req, res) {
   var content = {title: 'EZBet - History', history: app.get('database').getHistory()};
   res.render('history', content)
 })
-
-// app.get('/history/:matchId', async function(req, res) {
-//   console.log(req.params.matchId);
-//   res.send(app.get('database').getMatchFromHistory(req.params.matchId));
-// })
 
 app.get('/portfolio', async function(req, res) {
   var content = {title: 'EZBet - Portfolio', portfolio: app.get('database').getPortfolio()};
@@ -69,11 +64,8 @@ app.listen(3000, function() {
 
 
 
-
 // TOP-LEVEL FUNCTIONALITY
-function filterTeamsFromRanking(teamsRanking) {
-  return teamsRanking.map(x => x.team.name);
-}
+
 
 function filterUsefullMatches(match) {
   if(typeof(match.team1) == 'undefined' || typeof(match.team2) == 'undefined' || match.live || app.get('database').isInHistory(match.id)) {
