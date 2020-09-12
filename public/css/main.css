@@ -166,6 +166,20 @@ h6 {
 #match-list .match-tease--date > span {
   font-weight: 700;
 }
+#match-list .match-tease--portfolio {
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 15px;
+  color: white;
+  background-color: green;
+  padding: 0 6px;
+  border-radius: 10px;
+  transform: translate(100%, -100%);
+}
+#match-list .match-tease--portfolio > a {
+  font-weight: 700;
+}
 
 #match-detail-wrapper {
   position: relative;
@@ -193,6 +207,32 @@ h6 {
 #match-detail-wrapper .match-detail--head img {
   width: 200px;
   margin-bottom: 5px;
+}
+
+#popup-window {
+  width: 600px;
+  height: 400px;
+  background: #343640;
+  visibility: visible;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+#popup-window .match-detail {
+  display: flex;
+  justify-content: space-between;
+  padding: 18px 20px;
+}
+#popup-window .match-detail:before {
+  content: "vs";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translateY(-50%) translateX(-50%);
+  font-size: 46px;
+  font-weight: 700;
+  color: #C7C8D6;
 }
 
 /*# sourceMappingURL=main.css.map */

@@ -151,8 +151,13 @@
       top: 0;
       right: 0;
       font-size: 15px;
+      color: white;
+      background-color: green;
+      padding: 0 6px;
+      border-radius: 10px;
+      transform: translate(100%, -100%);
 
-      > span {
+      > a {
         font-weight: $font-weight-bold;
       }
     }
@@ -195,9 +200,42 @@
         width: 200px;
         margin-bottom: 5px;
       }
+    }
+  }
+}
+
+#popup-window {
+  width: 600px;
+  height: 400px;
+  background: $blue-dark;
+  visibility: visible;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  .match-detail {
+    display: flex;
+    justify-content: space-between;
+    padding: 18px 20px;
+
+    &:before {
+      content: 'vs';
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translateY(-50%) translateX(-50%);
+      font-size: 46px;
+      font-weight: $font-weight-bold;
+      color: $blue-light;
+    }
+
+    &--team {
 
     }
 
-  }
+    &--date {
 
+    }
+  }
 }

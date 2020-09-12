@@ -17,6 +17,8 @@ block matchList
           div.match-tease--date
             - var matchDate = new Date(item.date).toLocaleTimeString()
             span= matchDate.replace(/:\d+ /, ' ')
+          div.match-tease--portfolio
+            a(onclick='showPortfolioPopUp(' + item.matchID + ');') +
           div.match-tease--team
             div.match-tease--team--info
               h5= item.team2.name

@@ -5,8 +5,18 @@ $(document).ready(function() {
         firstMatchId = $('#match-detail-wrapper >:first-child').data('matchid');
         showMatchDetails(firstMatchId);
     }
+    createPopupWindow();
 
 });
+
+var popupWindow;
+
+function createPopupWindow() {
+    popupWindow = document.createElement('div');
+    popupWindow.id = 'popup-window';
+    document.getElementById('content').appendChild(popupWindow);
+    popupWindow.innerHTML = '<div class="match-detail"><div class="team"></div><div class="team"></div></div>';
+}
 
 
 function test() {
@@ -28,13 +38,14 @@ function showMatchDetails(matchId) {
 }
 
 
-function showPortfolioPopUp(matchId) {
+function showPortfolioPopUp(team1Name, team2Name, matchId) {
     // create popup window with details 
     // + 2 fields
     // the team you bet on should be able to select
     // one for the amount of money you bet
     // another for the odds you bet for
     // button cancel + add to portfolio
+    
 }
 
 function addSelectedMatchToPortfolio(matchId) {
