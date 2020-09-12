@@ -146,6 +146,17 @@
 
     }
 
+    &--portfolio {
+      position: absolute;
+      top: 0;
+      right: 0;
+      font-size: 15px;
+
+      > span {
+        font-weight: $font-weight-bold;
+      }
+    }
+
   }
 
 }

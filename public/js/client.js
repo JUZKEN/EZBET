@@ -28,10 +28,6 @@ function showMatchDetails(matchId) {
 }
 
 
-function selectMatchForPortfolio(matchId) {
-    showPortfolioPopUp(matchId);
-}
-
 function showPortfolioPopUp(matchId) {
     // create popup window with details 
     // + 2 fields

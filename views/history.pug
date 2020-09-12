@@ -3,24 +3,26 @@ extends index.pug
 
 block matchList
   h4 History
-  each val, key in history
-    - var date = new Date(Number(key))
-    h5= date.getDate() + '-' + (date.getMonth() + 1) + '-' + date.getFullYear()
-    each item in val
-      div(class='match-tease' data-matchid=`${item.matchID}` onclick='showMatchDetails('+`${item.matchID}`+')')
-        div.match-tease--team
-          img(src=item.team1.logo)
-          div.match-tease--team--info
-            h5= item.team1.name
-            span= item.bettingData.ezBetOdds.toFixed(2)
-        div.match-tease--date
-          - var matchDate = new Date(item.date).toLocaleTimeString()
-          span= matchDate.replace(/:\d+ /, ' ')
-        div.match-tease--team
-          div.match-tease--team--info
-            h5= item.team2.name
-            span= (1 - item.bettingData.ezBetOdds).toFixed(2)
-          img(src=item.team2.logo)
+  .match-holder
+    each val, key in history
+      - var date = new Date(Number(key))
+      h5= date.getDate() + '-' + (date.getMonth() + 1) + '-' + date.getFullYear()
+      each item in val
+        div(class='match-tease' data-matchid=`${item.matchID}` onclick='showMatchDetails('+`${item.matchID}`+')')
+          div.match-tease--team
+            img(src=item.team1.logo)
+            div.match-tease--team--info
+              h5= item.team1.name
+              span= item.bettingData.ezBetOdds.toFixed(2)
+          div.match-tease--date
+            - var matchDate = new Date(item.date).toLocaleTimeString()
+            span= matchDate.replace(/:\d+ /, ' ')
+          div.match-tease--team
+            div.match-tease--team--info
+              h5= item.team2.name
+              span= (1 - item.bettingData.ezBetOdds).toFixed(2)
+            img(src=item.team2.logo)
+          
 
 block matchDetail
   each val, key in history

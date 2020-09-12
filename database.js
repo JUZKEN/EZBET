@@ -74,15 +74,20 @@ class EZBETDatabase {
   async checkAndWriteMatchesOutComes() {
     var historyIds = Object.keys(this.history);
     for(var i=0; i < historyIds.length; i++) {
-      
-      if(this.history[historyIds[i]].outcome == null) {
-        var match = await limiter.schedule(() => HLTV.getMatch({id: parseInt(historyIds[i])}));
+      var historyId = historyIds[i];
+      var matchIds = Object.keys(this.history[historyId]);
+      for(var j=0; j< matchIds.length; j++) {
+        var matchId = matchIds[j];
+        if(this.history[historyId][matchId].outcome == null) {
+          var match = await limiter.schedule(() => HLTV.getMatch({id: parseInt(matchId)}));
 
-        if(typeof(match.winnerTeam) != 'undefined') {
-          this.history[historyIds[i]].outcome = match.winnerTeam;
+          if(typeof(match.winnerTeam) != 'undefined') {
+            this.history[historyId][matchId].outcome = match.winnerTeam;
+          }
         }
       }
     }
+    this.saveHistory();
   }
 
   isInHistory(matchId) {

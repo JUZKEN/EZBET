@@ -1,0 +1,207 @@
+body {
+  font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  color: #131419;
+  background-color: #ECEEF9;
+  margin: 0;
+  user-select: none;
+  overflow: hidden;
+}
+
+a {
+  color: #131419;
+}
+a:hover {
+  text-decoration: none;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 700;
+}
+
+h1 {
+  font-size: 2.25rem;
+}
+
+h2 {
+  font-size: 1.75rem;
+}
+
+h3 {
+  font-size: 1.5rem;
+}
+
+h4 {
+  font-size: 1.25rem;
+}
+
+h5 {
+  font-size: 1.125rem;
+}
+
+h6 {
+  font-size: 1rem;
+}
+
+@media (min-width: 992px) {
+  .container-fluid {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+.ezbet-btn {
+  background: #343640;
+  padding: 10px 26px;
+  border-radius: 50px;
+  color: #fff;
+  font-weight: 700;
+  transition: 0.15s ease-in-out;
+}
+.ezbet-btn:hover {
+  color: #fff;
+  background: #292a32;
+}
+
+#header {
+  border-bottom: 1px solid #C7C8D6;
+}
+#header .wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.6rem 0;
+}
+#header .wrapper #tabs ul {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
+#header .wrapper #tabs ul li {
+  display: inline-block;
+  font-size: 1.375rem;
+}
+#header .wrapper #tabs ul li.current {
+  font-weight: 700;
+}
+#header .wrapper #tabs ul li.current a:hover {
+  color: #131419;
+}
+#header .wrapper #tabs ul li a {
+  padding: 0 0.75rem;
+  transition: 0.15s ease-in-out;
+}
+#header .wrapper #tabs ul li a:hover {
+  color: #6b718d;
+}
+
+#content .home-columns > div:last-child {
+  padding-left: 2rem;
+}
+
+#match-list {
+  padding-top: 2.5rem;
+}
+#match-list > h5 {
+  color: #343640;
+  margin-bottom: 1rem;
+}
+#match-list .match-tease {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  border-radius: 20px;
+  background: #ECEEF9;
+  padding: 18px 20px;
+  margin-bottom: 2rem;
+  box-shadow: 6px 6px 18px 0px rgba(0, 0, 0, 0.16), -6px -6px 18px 0px white;
+  transition: 0.2s ease-in-out;
+  cursor: pointer;
+}
+#match-list .match-tease:hover, #match-list .match-tease.active {
+  box-shadow: 8px 8px 20px 0px rgba(0, 0, 0, 0.2), -8px -8px 20px 0px white;
+}
+#match-list .match-tease:before {
+  content: "vs";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translateY(-50%) translateX(-50%);
+  font-size: 46px;
+  font-weight: 700;
+  color: #C7C8D6;
+}
+#match-list .match-tease--team {
+  display: flex;
+  align-items: center;
+}
+#match-list .match-tease--team:last-child {
+  text-align: right;
+}
+#match-list .match-tease--team:last-child img {
+  margin-left: 7px;
+  margin-right: 0;
+}
+#match-list .match-tease--team--info h5 {
+  margin-bottom: 2px;
+}
+#match-list .match-tease--team--info span {
+  background-color: #131419;
+  color: #fff;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: 7px;
+  font-size: 14px;
+}
+#match-list .match-tease--team img {
+  width: 50px;
+  max-height: 50px;
+  margin-right: 7px;
+}
+#match-list .match-tease--date {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateY(-50%) translateX(-50%);
+  font-size: 15px;
+}
+#match-list .match-tease--date > span {
+  font-weight: 700;
+}
+#match-list .match-tease--portfolio {
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 15px;
+}
+#match-list .match-tease--portfolio > span {
+  font-weight: 700;
+}
+
+#match-detail-wrapper {
+  position: relative;
+  padding: 3rem 2rem;
+  height: 100%;
+  border-left: 1px solid #C7C8D6;
+}
+#match-detail-wrapper .match-detail {
+  position: absolute;
+  width: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  visibility: hidden;
+  padding: 2rem 2.5rem;
+  transition: 0.15s ease-in-out;
+}
+#match-detail-wrapper .match-detail.active {
+  opacity: 1;
+  visibility: visible;
+}
+#match-detail-wrapper .match-detail--head--info h5 {
+  margin-bottom: 0;
+}
+#match-detail-wrapper .match-detail--head img {
+  width: 200px;
+  margin-bottom: 5px;
+}
+
+/*# sourceMappingURL=main.css.map */
