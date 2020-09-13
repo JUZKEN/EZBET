@@ -30,18 +30,18 @@ app.get('/', async function (req, res) {
   var matchesBettingDataHistoryToday = app.get('database').getMatchesFromToday();
   await checkAndWriteMatchesOutcomes();
   console.log(matchesBettingDataHistoryToday);
-  var content = {title: 'Home', matchesBettingDataHistoryToday: matchesBettingDataHistoryToday};
+  var content = {title: 'Home', matchesBettingDataHistoryToday: matchesBettingDataHistoryToday, balance: app.get('database').getCurrentBalance()};
   res.render('index', content)
 })
 
 
 app.get('/history', async function(req, res) {
-  var content = {title: 'History', history: app.get('database').getHistory()};
+  var content = {title: 'History', history: app.get('database').getHistorySorted(), balance: app.get('database').getCurrentBalance()};
   res.render('history', content)
 })
 
 app.get('/portfolio', async function(req, res) {
-  var content = {title: 'Portfolio', portfolio: app.get('database').getPortfolio()};
+  var content = {title: 'Portfolio', portfolio: app.get('database').getPortfolioSorted(), balance: app.get('database').getCurrentBalance()};
   res.render('portfolio', content)
 })
 
@@ -86,7 +86,6 @@ function filterUsefullMatches(match) {
 async function checkOddsAndWriteMatches(matches, ranking) {
   var matchesBettingData = new Array();
   var nrOfMatches = matches.length > 10 ? 10 : matches.length;
-
   for(var i = 0; i < nrOfMatches; i++) {
     console.log(matches[i]);
     const {match, bettingData} = await getMatchOdds(matches[i]);

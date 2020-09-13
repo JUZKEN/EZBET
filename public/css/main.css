@@ -48,19 +48,6 @@ h6 {
     padding-right: 2rem;
   }
 }
-.ezbet-btn {
-  background: #343640;
-  padding: 10px 26px;
-  border-radius: 50px;
-  color: #fff;
-  font-weight: 700;
-  transition: 0.15s ease-in-out;
-}
-.ezbet-btn:hover {
-  color: #fff;
-  background: #292a32;
-}
-
 #header {
   border-bottom: 1px solid #C7C8D6;
 }
@@ -92,6 +79,33 @@ h6 {
 #header .wrapper #tabs ul li a:hover {
   color: #6b718d;
 }
+#header .wrapper #portfolio {
+  display: inline-block;
+}
+#header .wrapper #portfolio .ezbet-btn {
+  background: #343640;
+  padding: 10px 26px;
+  border-radius: 50px;
+  color: #fff;
+  font-weight: 700;
+  transition: 0.15s ease-in-out;
+  float: right;
+}
+#header .wrapper #portfolio .ezbet-btn:hover {
+  color: #fff;
+  background: #292a32;
+}
+#header .wrapper #portfolio .ezbet-balance {
+  padding: 10px 26px;
+  border-radius: 50px;
+  color: #626578;
+  font-weight: 700;
+  transition: 0.15s ease-in-out;
+  float: right;
+}
+#header .wrapper #portfolio .ezbet-balance:hover {
+  color: #1d1e24;
+}
 
 #content .home-columns > div:last-child {
   padding-left: 2rem;
@@ -99,6 +113,8 @@ h6 {
 
 #match-list {
   padding-top: 2.5rem;
+  display: flex;
+  flex-direction: column;
 }
 #match-list > h5 {
   color: #343640;
@@ -166,19 +182,8 @@ h6 {
 #match-list .match-tease--date > span {
   font-weight: 700;
 }
-#match-list .match-tease--portfolio {
-  position: absolute;
-  top: 0;
-  right: 0;
-  font-size: 15px;
-  color: white;
-  background-color: green;
-  padding: 0 6px;
-  border-radius: 10px;
-  transform: translate(100%, -100%);
-}
-#match-list .match-tease--portfolio > a {
-  font-weight: 700;
+#match-list .match-holder {
+  flex: 1 0 auto;
 }
 
 #match-detail-wrapper {
@@ -209,30 +214,21 @@ h6 {
   margin-bottom: 5px;
 }
 
-#popup-window {
-  width: 600px;
-  height: 400px;
-  background: #343640;
-  visibility: visible;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-#popup-window .match-detail {
+.match-add-portfolio {
   display: flex;
-  justify-content: space-between;
-  padding: 18px 20px;
+  justify-content: space-around;
+  padding: 20px 40px;
 }
-#popup-window .match-detail:before {
-  content: "vs";
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translateY(-50%) translateX(-50%);
-  font-size: 46px;
-  font-weight: 700;
-  color: #C7C8D6;
+.match-add-portfolio input[type=radio] {
+  width: 20px;
+  height: 20px;
+}
+.match-add-portfolio input[type=number] {
+  width: auto;
+  height: 30px;
+}
+.match-add-portfolio > a {
+  color: #ffffff;
 }
 
 /*# sourceMappingURL=main.css.map */

@@ -5,18 +5,7 @@ $(document).ready(function() {
         firstMatchId = $('#match-detail-wrapper >:first-child').data('matchid');
         showMatchDetails(firstMatchId);
     }
-    createPopupWindow();
-
 });
-
-var popupWindow;
-
-function createPopupWindow() {
-    popupWindow = document.createElement('div');
-    popupWindow.id = 'popup-window';
-    document.getElementById('content').appendChild(popupWindow);
-    popupWindow.innerHTML = '<div class="match-detail"><div class="team"></div><div class="team"></div></div>';
-}
 
 
 function test() {
@@ -38,17 +27,7 @@ function showMatchDetails(matchId) {
 }
 
 
-function showPortfolioPopUp(team1Name, team2Name, matchId) {
-    // create popup window with details 
-    // + 2 fields
-    // the team you bet on should be able to select
-    // one for the amount of money you bet
-    // another for the odds you bet for
-    // button cancel + add to portfolio
-    
-}
-
-function addSelectedMatchToPortfolio(matchId) {
+function addSelectedMatchToPortfolio(matchId, team1Name, team2Name) {
     var xhttp = new XMLHttpRequest();
     xhttp.open("POST", "/portfolio", true);
     xhttp.setRequestHeader("Content-type", "application/json; charset=utf-8");
@@ -57,9 +36,17 @@ function addSelectedMatchToPortfolio(matchId) {
             console.log(JSON.parse(this.responseText));
         }
     };
-    var teamName = 'faze';
-    var betAmount = 200;
-    xhttp.send(JSON.stringify({'matchId': matchId, 'teamName': teamName, 'betAmount': betAmount}));
+    var teamName;
+    var team1Selected = document.getElementById(matchId + '.' + team1Name).checked;
+    if (team1Selected) {
+        teamName = team1Name;
+    } else {
+        teamName = team2Name;
+    }
+    var betAmount = parseInt(document.getElementById(matchId + '.betAmount').value);
+    if(betAmount > 0) {
+        xhttp.send(JSON.stringify({'matchId': matchId, 'teamName': teamName, 'betAmount': betAmount}));
+    }
 }
 
 function removeFromPortfolio(matchId) {

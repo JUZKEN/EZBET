@@ -8,7 +8,6 @@ html
       script(src='/js/client.js')
       title EZBET | #{title}
   body
-    
     section#header
       div.container-fluid
         div.wrapper
@@ -20,8 +19,10 @@ html
                   a(href='/') Home
                 li(class=(title === 'History' ? 'current' : ''))
                   a(href='/history') History
-                  
-            a.ezbet-btn(href='/portfolio') Portfolio
+
+            div#portfolio
+              a.ezbet-btn(href='/portfolio') Portfolio
+              p.ezbet-balance= '€ ' + balance.toString()
         
     section#content
       div.container-fluid
@@ -33,9 +34,28 @@ html
                 div#match-list
                   block matchList
                     h5 Today
-                    if Object.keys(matchesBettingDataHistoryToday).length === 0 && matchesBettingDataHistoryToday.constructor === Object
+                    if Object.keys(matchesBettingDataHistoryToday['today']).length === 0 && matchesBettingDataHistoryToday['today'].constructor === Object
                       p No more matches today
-                    each match in matchesBettingDataHistoryToday
+                    each match in matchesBettingDataHistoryToday['today']
+                      div(class='match-tease' data-matchid=`${match.matchID}` onclick='showMatchDetails('+`${match.matchID}`+')')
+                        div.match-tease--team
+                          img(src=match.team1.logo)
+                          div.match-tease--team--info
+                            h5= match.team1.name
+                            span= match.bettingData.ezBetOdds.toFixed(2)
+                        div.match-tease--date
+                          - var matchDate = new Date(match.date).toLocaleTimeString()
+                          span= matchDate.replace(/:\d+ /, ' ')
+                        div.match-tease--team
+                          div.match-tease--team--info
+                            h5= match.team2.name
+                            span= (1 - match.bettingData.ezBetOdds).toFixed(2)
+                          img(src=match.team2.logo)
+
+                    h5 Tomorrow
+                    if Object.keys(matchesBettingDataHistoryToday['tomorrow']).length === 0 && matchesBettingDataHistoryToday['tomorrow'].constructor === Object
+                      p No more matches tomorrow
+                    each match in matchesBettingDataHistoryToday['tomorrow']
                       div(class='match-tease' data-matchid=`${match.matchID}` onclick='showMatchDetails('+`${match.matchID}`+')')
                         div.match-tease--team
                           img(src=match.team1.logo)
@@ -55,7 +75,21 @@ html
               div.col-lg-8
                 div#match-detail-wrapper
                   block matchDetail
-                    each match in matchesBettingDataHistoryToday
+                    each match in matchesBettingDataHistoryToday['today']
+                      div(class='match-detail' data-matchid=`${match.matchID}`)
+                        div.match-detail--head.row.justify-content-center.text-center
+                          div.col-md-4
+                            img(src=match.team1.logo)
+                            h3= match.team1.name
+                          div.match-detail--head--info.col-md-3
+                            h5 Today
+                            - var matchDate = new Date(match.date).toLocaleTimeString()
+                            h1= matchDate.replace(/:\d+ /, ' ')
+                          div.col-md-4
+                            img(src=match.team2.logo)
+                            h3= match.team2.name
+
+                    each match in matchesBettingDataHistoryToday['tomorrow']
                       div(class='match-detail' data-matchid=`${match.matchID}`)
                         div.match-detail--head.row.justify-content-center.text-center
                           div.col-md-4

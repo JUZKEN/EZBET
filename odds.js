@@ -9,7 +9,6 @@ const limiter = new Bottleneck({
 
 
 async function getMatchOdds(match) {
-
   if(typeof(match.team1) == 'undefined' || typeof(match.team2) == 'undefined'){
     return false;
   }

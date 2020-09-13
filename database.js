@@ -66,6 +66,30 @@ class EZBETDatabase {
     fs.writeFileSync(dbPaths[0], JSON.stringify(this.history, null, 4));
   }
 
+  getHistorySorted() {
+    return Object.entries(this.history).sort(function(a, b) {
+      var dateA = new Date(parseInt(a[0]));
+      var dateB = new Date(parseInt(b[0]));
+      if(dateA < dateB) {
+        return 1;
+      } else {
+        return -1;
+      }
+    });
+  }
+
+  getPortfolioSorted() {
+    return Object.entries(this.portfolio).sort(function(a, b) {
+      var dateA = new Date(parseInt(a[0]));
+      var dateB = new Date(parseInt(b[0]));
+      if(dateA < dateB) {
+        return 1;
+      } else {
+        return -1;
+      }
+    });
+  }
+
   savePortfolio() {
     console.log('Saving Portfolio DB.');
     fs.writeFileSync(dbPaths[1], JSON.stringify(this.portfolio, null, 4));
@@ -83,6 +107,9 @@ class EZBETDatabase {
 
           if(typeof(match.winnerTeam) != 'undefined') {
             this.history[historyId][matchId].outcome = match.winnerTeam;
+            if(typeof(this.portfolio[historyId][matchId].outcome) != 'undefined') {
+              this.portfolio[historyId][matchId].outcome = match.winnerTeam;
+            }
           }
         }
       }
@@ -135,22 +162,56 @@ class EZBETDatabase {
     this.savePortfolio();
   }
 
+  getCurrentBalance() {
+    var balance = 0;
+
+    var dateKeys = Object.keys(this.portfolio);
+    for(var i in dateKeys) {
+      var dateKey = dateKeys[i];
+      var matchKeys = Object.keys(this.portfolio[dateKey]);
+      for(var j in matchKeys) {
+        var matchKey = matchKeys[j];
+
+        if(this.portfolio[dateKey][matchKey].outcome != null) {
+          if(this.portfolio[dateKey][matchKey].outcome.name === this.portfolio[dateKey][matchKey].betOnTeam) {
+            if(this.portfolio[dateKey][matchKey].team1.name === this.portfolio[dateKey][matchKey].betOnTeam) {
+              balance += this.portfolio[dateKey][matchKey].betAmount * parseFloat(this.portfolio[dateKey][matchKey].bettingData.actualBettingOdds.bettingOddsTeam1).toFixed(2);
+            } else {
+              balance += this.portfolio[dateKey][matchKey].betAmount * parseFloat(this.portfolio[dateKey][matchKey].bettingData.actualBettingOdds.bettingOddsTeam2).toFixed(2);
+            }
+          } else {
+            balance -= this.portfolio[dateKey][matchKey].betAmount;
+          }
+        }
+      }
+    }
+    return balance.toFixed(2);
+  }
+
 
   getMatchesFromToday() {
     var today = new Date().setHours(0,0,0,0).toString();
+    var tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    var retObj = {'today': {}, 'tomorrow': {}};
     if(Object.keys(this.history).includes(today)) {
-
-      var retObj = {};
       var dateKeys = Object.keys(this.history[today]);
       for(var i in dateKeys) {
         if(this.history[today][dateKeys[i]].date > new Date()) {
-          retObj[dateKeys[i]] = this.history[today][dateKeys[i]];
+          retObj['today'][dateKeys[i]] = this.history[today][dateKeys[i]];
         }
       }
-      return retObj;
-    } else {
-      return {};
     }
+
+    if(Object.keys(this.history).includes(tomorrow)) {
+      var dateKeys = Object.keys(this.history[tomorrow]);
+      for(var i in dateKeys) {
+        if(this.history[tomorrow][dateKeys[i]].date > new Date()) {
+          retObj['tomorrow'][dateKeys[i]] = this.history[tomorrow][dateKeys[i]];
+        }
+      }
+    }
+    return retObj;
   }
 
   getMatchFromHistory(matchId) {

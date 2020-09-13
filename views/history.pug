@@ -4,10 +4,12 @@ extends index.pug
 block matchList
   h4 History
   .match-holder
-    each val, key in history
+    each val in history
+      - var key = val[0]
+      - var entry = val[1]
       - var date = new Date(Number(key))
       h5= date.getDate() + '-' + (date.getMonth() + 1) + '-' + date.getFullYear()
-      each item in val
+      each item in entry
         div(class='match-tease' data-matchid=`${item.matchID}` onclick='showMatchDetails('+`${item.matchID}`+')')
           div.match-tease--team
             img(src=item.team1.logo)
@@ -17,8 +19,6 @@ block matchList
           div.match-tease--date
             - var matchDate = new Date(item.date).toLocaleTimeString()
             span= matchDate.replace(/:\d+ /, ' ')
-          div.match-tease--portfolio
-            a(onclick='showPortfolioPopUp(' + item.matchID + ');') +
           div.match-tease--team
             div.match-tease--team--info
               h5= item.team2.name
@@ -27,9 +27,17 @@ block matchList
           
 
 block matchDetail
-  each val, key in history
-    each match in val
+  each val in history
+    each match in val[1]
       div(class='match-detail' data-matchid=`${match.matchID}`)
+        div.match-add-portfolio
+          input(id=match.matchID + '.' + match.team1.name, type="radio", name="team", value=match.team1.name)
+          label(for=match.matchID + '.' + match.team1.name)= match.team1.name
+          input(id=match.matchID + '.' + match.team2.name, type="radio", name="team" value=match.team2.name)
+          label(for=match.matchID + '.' + match.team2.name)= match.team2.name
+          input(id=match.matchID + '.betAmount', type="number", name="betAmount", value="20")
+          a.ezbet-btn(onclick='addSelectedMatchToPortfolio('+ match.matchID +', "' + match.team1.name +'", "'+ match.team2.name +'");') Add
+
         div.match-detail--head.row.justify-content-center.text-center
           div.col-md-4
             img(src=match.team1.logo)
