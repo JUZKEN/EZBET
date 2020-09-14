@@ -12,6 +12,7 @@ const limiter = new Bottleneck({
 const readFile = util.promisify(fs.readFile);
 const dbPaths = ['./json-dbs/history.json', './json-dbs/portfolio.json'];
 
+
 class EZBETDatabase {
 
   constructor() {
@@ -32,6 +33,8 @@ class EZBETDatabase {
 
     this.history = JSON.parse(fs.readFileSync(dbPaths[0], 'utf8'));
     this.portfolio = JSON.parse(fs.readFileSync(dbPaths[1], 'utf8'));
+
+    this.balance = this.initBalance();
   }
 
 
@@ -109,6 +112,16 @@ class EZBETDatabase {
             this.history[historyId][matchId].outcome = match.winnerTeam;
             if(typeof(this.portfolio[historyId]) != 'undefined' && Object.keys(this.portfolio[historyId]).includes(matchId)) {
               this.portfolio[historyId][matchId].outcome = match.winnerTeam;
+
+              if(this.portfolio[historyId][matchId].outcome.name === this.portfolio[historyId][matchId].betOnTeam) {
+                if(this.portfolio[historyId][matchKey].team1.name === this.portfolio[historyId][matchId].betOnTeam) {
+                  this.balance += this.portfolio[historyId][matchId].betAmount * parseFloat(this.portfolio[historyId][matchId].bettingData.actualBettingOdds.bettingOddsTeam1).toFixed(2);
+                } else {
+                  this.balance += this.portfolio[historyId][matchId].betAmount * parseFloat(this.portfolio[historyId][matchId].bettingData.actualBettingOdds.bettingOddsTeam2).toFixed(2);
+                }
+              } else {
+                this.balance -= this.portfolio[historyId][matchId].betAmount;
+              }
             }
           }
         }
@@ -167,9 +180,38 @@ class EZBETDatabase {
     this.savePortfolio();
   }
 
-  // todo: this is bad, needs to be atomic
+  getBalanceTrend() {
+    var retVal = new Array();
+    var dateKeys = Object.keys(this.portfolio);
 
-  getCurrentBalance() {
+    var prevBalance = 0;
+
+    for(var i in dateKeys) {
+      var currentBalance = prevBalance;
+      var matchKeys = Object.keys(this.portfolio[dateKeys[i]]);
+
+      for(var j in matchKeys) {
+        var match = this.portfolio[dateKeys[i]][matchKeys[j]];
+        if(match.outcome != null) {
+          if(match.outcome.name === match.betOnTeam) {
+            if(match.team1.name === match.betOnTeam) {
+              currentBalance += match.betAmount * parseFloat(match.bettingData.actualBettingOdds.bettingOddsTeam1).toFixed(2);
+            } else {
+              currentBalance += match.betAmount * parseFloat(match.bettingData.actualBettingOdds.bettingOddsTeam2).toFixed(2);
+            }
+          } else {
+            currentBalance -= match.betAmount;
+          }
+        }
+      }
+      retVal.push({x: new Date(parseInt(dateKeys[i])), y: currentBalance});
+      prevBalance = currentBalance;
+    }
+    return retVal;
+  }
+
+
+  initBalance() {
     var balance = 0;
 
     var dateKeys = Object.keys(this.portfolio);
@@ -193,6 +235,10 @@ class EZBETDatabase {
       }
     }
     return balance.toFixed(2);
+  }
+
+  getBalance() {
+    return this.balance;
   }
 
   async refreshActualBettingOdds(date, match) {

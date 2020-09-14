@@ -35,19 +35,23 @@ app.get('/', async function (req, res) {
   // check if any outcomes are known
   await app.get('database').checkAndWriteMatchesOutComes();
 
-  var content = {title: 'Home', matchesBettingDataHistoryToday: matchesBettingDataHistoryToday, balance: app.get('database').getCurrentBalance()};
+  var content = {title: 'Home', matchesBettingDataHistoryToday: matchesBettingDataHistoryToday, balance: app.get('database').getBalance()};
   res.render('index', content)
 })
 
 
 app.get('/history', async function(req, res) {
-  var content = {title: 'History', history: app.get('database').getHistorySorted(), balance: app.get('database').getCurrentBalance()};
+  var content = {title: 'History', history: app.get('database').getHistorySorted(), balance: app.get('database').getBalance()};
   res.render('history', content)
 })
 
 app.get('/portfolio', async function(req, res) {
-  var content = {title: 'Portfolio', portfolio: app.get('database').getPortfolioSorted(), balance: app.get('database').getCurrentBalance()};
+  var content = {title: 'Portfolio', portfolio: app.get('database').getPortfolioSorted(), balance: app.get('database').getBalance()};
   res.render('portfolio', content)
+})
+
+app.get('/portfolio/chart', async function(req, res) {
+  res.send(JSON.stringify(app.get('database').getBalanceTrend()));
 })
 
 
