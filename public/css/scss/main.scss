@@ -126,6 +126,10 @@
         }
       }
 
+      &.selected {
+        text-decoration: underline;
+      }
+
       &--info {
         h5 {
           margin-bottom: 2px;

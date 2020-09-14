@@ -4,7 +4,6 @@ body {
   background-color: #ECEEF9;
   margin: 0;
   user-select: none;
-  overflow: hidden;
 }
 
 a {
@@ -155,6 +154,9 @@ h6 {
 #match-list .match-tease--team:last-child img {
   margin-left: 7px;
   margin-right: 0;
+}
+#match-list .match-tease--team.selected {
+  text-decoration: underline;
 }
 #match-list .match-tease--team--info h5 {
   margin-bottom: 2px;

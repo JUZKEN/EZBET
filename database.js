@@ -167,6 +167,8 @@ class EZBETDatabase {
     this.savePortfolio();
   }
 
+  // todo: this is bad, needs to be atomic
+
   getCurrentBalance() {
     var balance = 0;
 

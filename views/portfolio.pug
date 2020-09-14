@@ -11,7 +11,7 @@ block matchList
     h5= date.getDate() + '-' + (date.getMonth() + 1) + '-' + date.getFullYear()
     each item in entry
       div.match-tease
-        div.match-tease--team
+        div(class= 'match-tease--team' + (item.betOnTeam == item.team1.name ? ' selected' : ''))
           img(src=item.team1.logo)
           div.match-tease--team--info
             h5= item.team1.name
@@ -19,7 +19,7 @@ block matchList
         div.match-tease--date
           - var matchDate = new Date(item.date).toLocaleTimeString()
           span= matchDate.replace(/:\d+ /, ' ')
-        div.match-tease--team
+        div(class= 'match-tease--team' + (item.betOnTeam == item.team2.name ? ' selected' : ''))
           div.match-tease--team--info
             h5= item.team2.name
             span= (1 - item.bettingData.ezBetOdds).toFixed(2)

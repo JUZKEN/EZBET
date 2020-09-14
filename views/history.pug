@@ -30,22 +30,14 @@ block matchDetail
   each val in history
     each match in val[1]
       div(class='match-detail' data-matchid=`${match.matchID}`)
-        div.match-add-portfolio
-          input(id=match.matchID + '.' + match.team1.name, type="radio", name="team", value=match.team1.name)
-          label(for=match.matchID + '.' + match.team1.name)= match.team1.name
-          input(id=match.matchID + '.' + match.team2.name, type="radio", name="team" value=match.team2.name)
-          label(for=match.matchID + '.' + match.team2.name)= match.team2.name
-          input(id=match.matchID + '.betAmount', type="number", name="betAmount", value="20")
-          a.ezbet-btn(onclick='addSelectedMatchToPortfolio('+ match.matchID +', "' + match.team1.name +'", "'+ match.team2.name +'");') Add
-
         div.match-detail--head.row.justify-content-center.text-center
           div.col-md-4
             img(src=match.team1.logo)
             h3= match.team1.name
           div.match-detail--head--info.col-md-3
-            h5 Today
-            - var matchDate = new Date(match.date).toLocaleTimeString()
-            h1= matchDate.replace(/:\d+ /, ' ')
+            - var matchDate = new Date(match.date)
+            h5= matchDate.getDate() + '-' + (matchDate.getMonth() + 1) + '-' + matchDate.getFullYear()
+            h1= matchDate.toLocaleTimeString().replace(/:\d+ /, ' ')
           div.col-md-4
             img(src=match.team2.logo)
             h3= match.team2.name
