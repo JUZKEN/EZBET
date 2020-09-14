@@ -22,14 +22,19 @@ app.get('/', async function (req, res) {
   var teamsRanking = await limiter.schedule(() => HLTV.getTeamRanking());
   app.set('ranking', teamsRanking.map(x => x.team.name).slice(0,20));
 
-  // current matches
+  // current matches and filter useless ones out
   var matches = await limiter.schedule(() => HLTV.getMatches());
   matches = matches.sort(compare_item).filter(filterUsefullMatches);
+
+  // calculate odds + collect actual betting odds, write to DB
   await checkOddsAndWriteMatches(matches, app.get('ranking'));
-  // TODO:
-  var matchesBettingDataHistoryToday = app.get('database').getMatchesFromToday();
-  await checkAndWriteMatchesOutcomes();
-  console.log(matchesBettingDataHistoryToday);
+
+  // get all collected matches from DB
+  var matchesBettingDataHistoryToday = await app.get('database').getMatchesFromToday();
+
+  // check if any outcomes are known
+  await app.get('database').checkAndWriteMatchesOutComes();
+
   var content = {title: 'Home', matchesBettingDataHistoryToday: matchesBettingDataHistoryToday, balance: app.get('database').getCurrentBalance()};
   res.render('index', content)
 })
@@ -48,7 +53,8 @@ app.get('/portfolio', async function(req, res) {
 
 app.post('/portfolio', async function(req, res) {
   var data = req.body;
-  app.get('database').addMatchToPortfolio(data.matchId, data.teamName, data.betAmount);
+  var success = app.get('database').addMatchToPortfolio(data.matchId, data.teamName, data.betAmount);
+  res.send(JSON.stringify({success: success}));
 })
 
 app.delete('/portfolio', async function(req, res) {
@@ -66,19 +72,23 @@ app.listen(3000, function() {
 
 // TOP-LEVEL FUNCTIONALITY
 
-
 function filterUsefullMatches(match) {
   if(typeof(match.team1) == 'undefined' || typeof(match.team2) == 'undefined' || match.live || app.get('database').isInHistory(match.id)) {
     return false;
   }
+
+  // onle best of threes
   if(match.format !== 'bo3') {
     return false;
   }
+
+  // get matches that are recent
   var dateToday = new Date();
   dateToday.setDate(dateToday.getDate() + 2);
   if(new Date(match.date) > dateToday) {
     return false;
   }
+  // filter out matches with unknown oppontents
   return app.get('ranking').includes(match.team1.name) && app.get('ranking').includes(match.team2.name)
 }
 
@@ -98,20 +108,13 @@ async function checkOddsAndWriteMatches(matches, ranking) {
       match.team1.rank = ranking.indexOf(match.team1.name) + 1;
       match.team2.rank = ranking.indexOf(match.team2.name) + 1;
       matchesBettingData.push([match, bettingData]);
-      console.log(match);
     }
   }
-
   for(var i in matchesBettingData) {
     app.get('database').writeMatchToHistoryDB(matchesBettingData[i]);
   }
   app.get('database').saveHistory();
   return matchesBettingData;
-}
-
-
-async function checkAndWriteMatchesOutcomes() {
-  app.get('database').checkAndWriteMatchesOutComes();
 }
 
 function compare_item(a, b) {

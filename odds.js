@@ -61,10 +61,9 @@ function getTeamsForm(resultTeam1, resultTeam2) {
   return teamsForm;
 }
 
-
 async function retrieveGGBetBettingOdds(matchId) {
   var responseJsonObj = null;
-  const {stdout, stderr} = await exec('scrapy runspider python-spiders/ezbet_scraper.py -a start_url="https://www.hltv.org/matches/' + matchId + '/yeet"');
+  const {stdout, stderr} = await exec('scrapy runspider python-spiders/ezbet_scraper.py -a start_url="https://www.hltv.org/matches/' + matchId.toString() + '/yeet"');
 
   if(stdout.includes('None')) {
     console.log('No odds found for ' + matchId);
@@ -136,4 +135,5 @@ function getTeamsRanking(team1Profile, team2Profile) {
   return {"team1": (19 + (team2Profile.rank - team1Profile.rank)) / 38, "team2": (19 + (team1Profile.rank - team2Profile.rank)) / 38}
 }
 
-module.exports = getMatchOdds;
+module.exports.getMatchOdds = getMatchOdds;
+module.exports.retrieveGGBetBettingOdds = retrieveGGBetBettingOdds;

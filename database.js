@@ -1,6 +1,7 @@
 var fs = require('fs');
 const util = require('util');
 const { HLTV } = require('hltv');
+const odds = require('./odds')
 const Bottleneck = require('bottleneck');
 const limiter = new Bottleneck({
   maxConcurrent: 1,
@@ -34,7 +35,6 @@ class EZBETDatabase {
   }
 
 
-  // TODO: collect by date -> match id for better display on /history
   writeMatchToHistoryDB(matchDataList) {
     var match = matchDataList[0];
     var bettingData = matchDataList[1];
@@ -107,7 +107,7 @@ class EZBETDatabase {
 
           if(typeof(match.winnerTeam) != 'undefined') {
             this.history[historyId][matchId].outcome = match.winnerTeam;
-            if(typeof(this.portfolio[historyId][matchId].outcome) != 'undefined') {
+            if(typeof(this.portfolio[historyId]) != 'undefined' && Object.keys(this.portfolio[historyId]).includes(matchId)) {
               this.portfolio[historyId][matchId].outcome = match.winnerTeam;
             }
           }
@@ -140,12 +140,17 @@ class EZBETDatabase {
     match.betAmount = parseInt(betAmount);
     var date = new Date(match.date).setHours(0,0,0,0).toString();
     if(Object.keys(this.portfolio).includes(date)) {
-      this.portfolio[date][matchId] = match;
+      if(Object.keys(this.portfolio[date]).includes(matchId.toString())) {
+        return false;
+      } else {
+        this.portfolio[date][matchId] = match;
+      }
     } else {
       this.portfolio[date] = new Object();
       this.portfolio[date][matchId] = match;
     }
     this.savePortfolio();
+    return true;
   }
 
   removeMatchFromPortfolio(matchId) {
@@ -188,16 +193,26 @@ class EZBETDatabase {
     return balance.toFixed(2);
   }
 
+  async refreshActualBettingOdds(date, match) {
+    var actualBettingOdds = await odds.retrieveGGBetBettingOdds(match.matchID);
+    if(actualBettingOdds == false) {
+      return;
+    } else {
+      this.history[date][match.matchID].bettingData.actualBettingOdds = actualBettingOdds;
+    }
+  }
 
-  getMatchesFromToday() {
+  async getMatchesFromToday() {
     var today = new Date().setHours(0,0,0,0).toString();
-    var tomorrow = new Date(today);
+    var tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
+    var tomorrow =tomorrow.setHours(0,0,0,0).toString();
     var retObj = {'today': {}, 'tomorrow': {}};
     if(Object.keys(this.history).includes(today)) {
       var dateKeys = Object.keys(this.history[today]);
       for(var i in dateKeys) {
         if(this.history[today][dateKeys[i]].date > new Date()) {
+          await this.refreshActualBettingOdds(today, this.history[today][dateKeys[i]]);
           retObj['today'][dateKeys[i]] = this.history[today][dateKeys[i]];
         }
       }
@@ -207,6 +222,7 @@ class EZBETDatabase {
       var dateKeys = Object.keys(this.history[tomorrow]);
       for(var i in dateKeys) {
         if(this.history[tomorrow][dateKeys[i]].date > new Date()) {
+          await this.refreshActualBettingOdds(tomorrow, this.history[tomorrow][dateKeys[i]]);
           retObj['tomorrow'][dateKeys[i]] = this.history[tomorrow][dateKeys[i]];
         }
       }
