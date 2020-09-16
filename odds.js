@@ -39,9 +39,12 @@ async function getMatchOdds(match) {
   var actualBettingOdds = await retrieveGGBetBettingOdds(match.id);
   if(actualBettingOdds == false) {
     return false;
+  } else {
+    actualBettingOdds.convertedOddsTeam1 = parseFloat((100 / (actualBettingOdds.bettingOddsTeam2 * 106.38)).toFixed(2));
+    actualBettingOdds.convertedOddsTeam2 = parseFloat((100 / (actualBettingOdds.bettingOddsTeam1 * 106.38)).toFixed(2));
   }
   var ezBetOdds = teamsFormScore * .33 + teamsHeadToHeadScore * .33 + teamsRankingScore * .33;
-  return {match: match, bettingData: {"teamFormScore": teamsFormScore, "teamsHeadToHeadScore": teamsHeadToHeadScore, "teamsRankingScore": teamsRankingScore, "actualBettingOdds": actualBettingOdds, "ezBetOdds": ezBetOdds}};
+  return {match: match, bettingData: {"teamFormScore": teamsFormScore, "teamsHeadToHeadScore": teamsHeadToHeadScore, "teamsRankingScore": teamsRankingScore, "actualBettingOdds": actualBettingOdds, "ezBetOdds": parseFloat(ezBetOdds.toFixed(2))}};
 }
 
 

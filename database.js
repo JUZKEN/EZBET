@@ -250,6 +250,8 @@ class EZBETDatabase {
     if(actualBettingOdds == false) {
       return;
     } else {
+      actualBettingOdds.convertedOddsTeam1 = parseFloat((100 / (actualBettingOdds.bettingOddsTeam2 * 106.38)).toFixed(2));
+      actualBettingOdds.convertedOddsTeam2 = parseFloat((100 / (actualBettingOdds.bettingOddsTeam1 * 106.38)).toFixed(2));
       this.history[date][match.matchID].bettingData.actualBettingOdds = actualBettingOdds;
     }
   }
