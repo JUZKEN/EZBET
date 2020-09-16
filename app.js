@@ -1,7 +1,7 @@
 const express = require('express')
 const path = require('path');
 const { HLTV } = require('hltv')
-const getMatchOdds = require('./odds')
+const odds = require('./odds')
 const database = require('./database');
 const app = express()
 const Bottleneck = require('bottleneck');
@@ -25,7 +25,7 @@ app.get('/', async function (req, res) {
   // current matches and filter useless ones out
   var matches = await limiter.schedule(() => HLTV.getMatches());
   matches = matches.sort(compare_item).filter(filterUsefullMatches);
-
+  console.log(matches);
   // calculate odds + collect actual betting odds, write to DB
   await checkOddsAndWriteMatches(matches, app.get('ranking'));
 
@@ -102,7 +102,7 @@ async function checkOddsAndWriteMatches(matches, ranking) {
   var nrOfMatches = matches.length > 10 ? 10 : matches.length;
   for(var i = 0; i < nrOfMatches; i++) {
     console.log(matches[i]);
-    const {match, bettingData} = await getMatchOdds(matches[i]);
+    const {match, bettingData} = await odds.getMatchOdds(matches[i]);
     if(!bettingData) {
       console.log('Couldnt retrieve betting odds for ' + matches[i].team1 + ' vs ' + matches[i].team2);
       console.log('Match Object: ');

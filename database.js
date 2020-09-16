@@ -46,6 +46,7 @@ class EZBETDatabase {
       this.history[today][match.id] = {
         "matchID": match.id,
         "date": match.date,
+        "event": match.event,
         "team1": match.team1,
         "team2": match.team2,
         "bettingData": bettingData,
@@ -56,6 +57,7 @@ class EZBETDatabase {
       this.history[today][match.id] = {
         "matchID": match.id,
         "date": match.date,
+        "event": match.event,
         "team1": match.team1,
         "team2": match.team2,
         "bettingData": bettingData,
@@ -114,7 +116,7 @@ class EZBETDatabase {
               this.portfolio[historyId][matchId].outcome = match.winnerTeam;
 
               if(this.portfolio[historyId][matchId].outcome.name === this.portfolio[historyId][matchId].betOnTeam) {
-                if(this.portfolio[historyId][matchKey].team1.name === this.portfolio[historyId][matchId].betOnTeam) {
+                if(this.portfolio[historyId][matchId].team1.name === this.portfolio[historyId][matchId].betOnTeam) {
                   this.balance += this.portfolio[historyId][matchId].betAmount * parseFloat(this.portfolio[historyId][matchId].bettingData.actualBettingOdds.bettingOddsTeam1).toFixed(2);
                 } else {
                   this.balance += this.portfolio[historyId][matchId].betAmount * parseFloat(this.portfolio[historyId][matchId].bettingData.actualBettingOdds.bettingOddsTeam2).toFixed(2);
