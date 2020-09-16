@@ -38,6 +38,7 @@ block matchDetail
             - var matchDate = new Date(match.date)
             h5= matchDate.getDate() + '-' + (matchDate.getMonth() + 1) + '-' + matchDate.getFullYear()
             h1= matchDate.toLocaleTimeString().replace(/:\d+ /, ' ')
+            h5= match.event.name
           div.col-md-4
             img(src=match.team2.logo)
             h3= match.team2.name

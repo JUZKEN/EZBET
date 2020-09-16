@@ -94,6 +94,7 @@ html
                             h5 Today
                             - var matchDate = new Date(match.date).toLocaleTimeString()
                             h1= matchDate.replace(/:\d+ /, ' ')
+                            h5= match.event.name
                           div.col-md-4
                             img(src=match.team2.logo)
                             h3= match.team2.name
@@ -116,6 +117,7 @@ html
                             h5 Tomorrow
                             - var matchDate = new Date(match.date).toLocaleTimeString()
                             h1= matchDate.replace(/:\d+ /, ' ')
+                            h5= match.event.name
                           div.col-md-4
                             img(src=match.team2.logo)
                             h3= match.team2.name
