@@ -72,7 +72,7 @@ class EZBETDatabase {
   }
 
   getHistorySorted() {
-    return Object.entries(this.history).sort(function(a, b) {
+    var sortedHistory = Object.entries(this.history).sort(function(a, b) {
       var dateA = new Date(parseInt(a[0]));
       var dateB = new Date(parseInt(b[0]));
       if(dateA < dateB) {
@@ -81,6 +81,8 @@ class EZBETDatabase {
         return -1;
       }
     });
+    // only return matches that are played.
+    return sortedHistory.filter(function(item) { return new Date(parseInt(item[0])) < new Date().setHours(0,0,0,0) });
   }
 
   getPortfolioSorted() {
