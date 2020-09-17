@@ -50,12 +50,8 @@ function renderPortfolioChartData() {
                             }
                         }]
                     },
-                    elements: {
-                        point:{
-                            radius: 0
-                        }
-                    }
-                } 
+                    legend: false                 
+                }
             });
         }
       };

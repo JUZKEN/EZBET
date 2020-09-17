@@ -99,6 +99,21 @@ html
                             img(src=match.team2.logo)
                             h3= match.team2.name
 
+                        .match-detail--stats
+                          h3 Team Form
+                          .bar-holder
+                            .bar-percentage= (match.bettingData.teamFormScore*100).toFixed(2) + '%'
+                            .bar(style='width: '+ match.bettingData.teamFormScore*100 + '%;')
+                          h3 Head to Head
+                          .bar-holder
+                            .bar-percentage= (match.bettingData.teamsHeadToHeadScore*100).toFixed(2) + '%'
+                            .bar(style='width: '+ match.bettingData.teamsHeadToHeadScore*100 + '%;')
+                          h3 Ranking
+                          .bar-holder
+                            .bar-percentage= (match.bettingData.teamsRankingScore*100).toFixed(2) + '%'
+                            .bar(style='width: '+ match.bettingData.teamsRankingScore*100 + '%;')
+
+
                     each match in matchesBettingDataHistoryToday['tomorrow']
                       div(class='match-detail' data-matchid=`${match.matchID}`)
                         div.match-add-portfolio
@@ -121,4 +136,18 @@ html
                           div.col-md-4
                             img(src=match.team2.logo)
                             h3= match.team2.name
+                        
+                        .match-detail--stats
+                          h3 Team Form
+                          .bar-holder
+                            .bar-percentage= (match.bettingData.teamFormScore*100).toFixed(2) + '%'
+                            .bar(style='width: '+ match.bettingData.teamFormScore*100 + '%;')
+                          h3 Head to Head
+                          .bar-holder
+                            .bar-percentage= (match.bettingData.teamsHeadToHeadScore*100).toFixed(2) + '%'
+                            .bar(style='width: '+ match.bettingData.teamsHeadToHeadScore*100 + '%;')
+                          h3 Ranking
+                          .bar-holder
+                            .bar-percentage= (match.bettingData.teamsRankingScore*100).toFixed(2) + '%'
+                            .bar(style='width: '+ match.bettingData.teamsRankingScore*100 + '%;')
                   

@@ -215,6 +215,34 @@ h6 {
   width: 200px;
   margin-bottom: 5px;
 }
+#match-detail-wrapper .match-detail--stats {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 40px;
+}
+#match-detail-wrapper .match-detail h3 {
+  margin-top: 30px;
+}
+#match-detail-wrapper .match-detail .bar-holder {
+  width: 100%;
+  height: 2em;
+  border-radius: 20px;
+  background: #324159;
+}
+#match-detail-wrapper .match-detail .bar-percentage {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  color: white;
+  font-size: 1.35rem;
+  font-weight: 600;
+}
+#match-detail-wrapper .match-detail .bar {
+  height: 2em;
+  border-radius: 20px;
+  background: #f34e57;
+}
 
 .match-add-portfolio {
   display: flex;
