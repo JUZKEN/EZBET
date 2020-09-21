@@ -155,7 +155,7 @@ h6 {
   margin-left: 7px;
   margin-right: 0;
 }
-#match-list .match-tease--team.selected {
+#match-list .match-tease--team.selected > div > h5 {
   text-decoration: underline;
 }
 #match-list .match-tease--team--info h5 {
@@ -203,6 +203,7 @@ h6 {
   visibility: hidden;
   padding: 2rem 2.5rem;
   transition: 0.15s ease-in-out;
+  padding-top: 0;
 }
 #match-detail-wrapper .match-detail.active {
   opacity: 1;
@@ -220,6 +221,36 @@ h6 {
   display: flex;
   flex-direction: column;
   padding: 20px 40px;
+}
+#match-detail-wrapper .match-detail--odds {
+  display: flex;
+  padding: 30px 40px 30px 0px;
+  flex-direction: row;
+}
+#match-detail-wrapper .match-detail--odds span {
+  flex: 1 1 auto;
+  justify-content: center;
+  display: block;
+  background: #C7C8D6;
+  color: #324159;
+  margin: 100px;
+  margin-bottom: 0;
+  margin-top: 50px;
+  padding: 20px;
+  padding-bottom: 40px;
+  border-radius: 20px;
+}
+#match-detail-wrapper .match-detail--odds span h3, #match-detail-wrapper .match-detail--odds span p {
+  width: auto;
+  text-align: center;
+  margin: 0;
+}
+#match-detail-wrapper .match-detail--odds span p {
+  margin: 0;
+  padding: 0;
+  padding-top: 20px;
+  font-size: 48px;
+  font-weight: 600;
 }
 #match-detail-wrapper .match-detail h3 {
   margin-top: 30px;
@@ -247,18 +278,47 @@ h6 {
 .match-add-portfolio {
   display: flex;
   justify-content: space-around;
-  padding: 20px 40px;
+  padding: 15px 0;
+  margin: 30px 100px;
+  margin-bottom: 60px;
+  border-radius: 20px;
+  background: #C7C8D6;
 }
 .match-add-portfolio input[type=radio] {
-  width: 20px;
-  height: 20px;
+  width: 25px;
+  height: 25px;
+  margin: 10px;
+}
+.match-add-portfolio label {
+  display: inline-block;
+  margin-bottom: 0.5rem;
+  color: #131419;
+  font-size: 24px;
+  margin-top: 6px;
 }
 .match-add-portfolio input[type=number] {
-  width: auto;
-  height: 30px;
+  width: 80px;
+  height: 42px;
+  margin-top: 3px;
+  font-size: 24px;
+  border: 1px solid #131419;
+  padding-left: 10px;
+  border-radius: 10px;
+  background: #ECEEF9;
 }
 .match-add-portfolio > a {
-  color: #ffffff;
+  color: #131419;
+  font-size: 22px;
+  margin-top: 9px;
+  font-weight: 600;
+  border-radius: 10px;
+}
+.match-add-portfolio > a:hover {
+  text-decoration: underline;
+}
+
+#portfolio-chart {
+  padding: 40px 20px;
 }
 
 /*# sourceMappingURL=main.css.map */

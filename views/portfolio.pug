@@ -1,7 +1,7 @@
 extends index.pug
 
 block matchList
-  h4 Portfolio
+  h1 Portfolio
   if portfolio.length === 0
     p Nothing in your portfolio yet!
   each val in portfolio
@@ -10,20 +10,21 @@ block matchList
     - var date = new Date(Number(key))
     h5= date.getDate() + '-' + (date.getMonth() + 1) + '-' + date.getFullYear()
     each item in entry
-      div.match-tease
-        div(class= 'match-tease--team' + (item.betOnTeam == item.team1.name ? ' selected' : ''))
+      div.match-tease(style=(item.outcome == null ? "" : "background: " + (item.betOnTeam === item.outcome.name ? "rgba(182, 252, 166, 1)" : "rgba(252, 166, 166, 1)")))
+        div(class= 'match-tease--team' + (item.betOnTeam === item.team1.name ? ' selected' : ''))
           img(src=item.team1.logo)
           div.match-tease--team--info
             h5= item.team1.name
-            span= item.bettingData.ezBetOdds.toFixed(2)
+            span(style=(item.outcome == null ? "" : "background: " + (item.team1.name === item.outcome.name ? "rgba(0, 84, 20, 1)" : "rgba(143, 38, 0, 1)")))= item.bettingData.ezBetOdds.toFixed(2)
         div.match-tease--date
           - var matchDate = new Date(item.date).toLocaleTimeString()
           span= matchDate.replace(/:\d+ /, ' ')
-        div(class= 'match-tease--team' + (item.betOnTeam == item.team2.name ? ' selected' : ''))
+        div(class= 'match-tease--team' + (item.betOnTeam === item.team2.name ? ' selected' : ''))
           div.match-tease--team--info
             h5= item.team2.name
-            span= (1 - item.bettingData.ezBetOdds).toFixed(2)
+            span(style=(item.outcome == null ? "" : "background: " + (item.team2.name === item.outcome.name ? "rgba(0, 84, 20, 1)" : "rgba(143, 38, 0, 1)")))= (1 - item.bettingData.ezBetOdds).toFixed(2)
           img(src=item.team2.logo)
 
 block matchDetail
+  h1 Earnings over time
   canvas#portfolio-chart

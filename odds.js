@@ -26,8 +26,10 @@ async function getMatchOdds(match) {
   var resultTeam1 = await limiter.schedule(() => getResults(match.team1));
   var resultTeam2 = await limiter.schedule(() => getResults(match.team2));
 
+  var fullMatchStats = await limiter.schedule(() => HLTV.getMatch({id: match.id}));
+
   var teamsForm = getTeamsForm(resultTeam1, resultTeam2);
-  var teamsHeadToHead = getTeamsHeadToHead(resultTeam1, match.team2.id);
+  var teamsHeadToHead = getTeamsHeadToHead(match.team1.id, fullMatchStats.headToHead);
   var teamsRanking = getTeamsRanking(team1Profile, team2Profile);
 
   var teamsFormScore = teamsForm.team1;
@@ -40,8 +42,8 @@ async function getMatchOdds(match) {
   if(actualBettingOdds == false) {
     return false;
   } else {
-    actualBettingOdds.convertedOddsTeam1 = parseFloat((100 / (actualBettingOdds.bettingOddsTeam2 * 106.38)).toFixed(2));
-    actualBettingOdds.convertedOddsTeam2 = parseFloat((100 / (actualBettingOdds.bettingOddsTeam1 * 106.38)).toFixed(2));
+    actualBettingOdds.convertedOddsTeam1 = parseFloat((100 / (actualBettingOdds.bettingOddsTeam1 * 106.38)).toFixed(2));
+    actualBettingOdds.convertedOddsTeam2 = parseFloat((100 / (actualBettingOdds.bettingOddsTeam2 * 106.38)).toFixed(2));
   }
   var ezBetOdds = teamsFormScore * .33 + teamsHeadToHeadScore * .33 + teamsRankingScore * .33;
   return {match: match, bettingData: {"teamFormScore": teamsFormScore, "teamsHeadToHeadScore": teamsHeadToHeadScore, "teamsRankingScore": teamsRankingScore, "actualBettingOdds": actualBettingOdds, "ezBetOdds": parseFloat(ezBetOdds.toFixed(2))}};
@@ -97,37 +99,19 @@ function getTeamRecentResults(resultTeam1, matchesNum) {
 }
 
 
-function getTeamsHeadToHead(resultTeam1, team2Id) {
-  var headToHeadMatches = resultTeam1.filter(obj => obj.team2.id == team2Id)
+function getTeamsHeadToHead(team1Id, headToHead) {
 
-  if(headToHeadMatches.length == 0) {
+  if(typeof(headToHead) == 'undefined') {
     return {"team1": 0.5, "team2": 0.5};
   }
 
-  var matchDateDiffInMS = new Date() - new Date(headToHeadMatches[0].date)
-  var matchDateDiffInDays = Math.floor(matchDateDiffInMS/1000/60/60/24);
-
-  // check if match is older than 183 days (around 6 months)
-  if(matchDateDiffInDays < 183) {
-    var headToHeadResults = {team1MapWins: 0, team2MapWins: 0}
-    for(var i = 0; i < headToHeadMatches.length; i++ ) {
-
-      // split result and turn substrings into integers
-      result = headToHeadMatches[i].result.split(" - ").map(x=>+x);
-
-      if( headToHeadMatches[i].format == 'bo1' ) {
-        result[0] > result[1] ? headToHeadResults['team1MapWins']++ : headToHeadResults['team2MapWins']++
-      } else {
-        headToHeadResults['team1MapWins'] += result[0];
-        headToHeadResults['team2MapWins'] += result[1];
-      }
-    }
-
-    totalMaps = headToHeadResults['team1MapWins'] + headToHeadResults['team2MapWins'];
-    var team1Form = headToHeadResults['team1MapWins'] / totalMaps;
-    var team2Form = headToHeadResults['team2MapWins'] / totalMaps;
-
-    return {"team1": team1Form, "team2": team2Form};
+  if(headToHead.length > 15) {
+    headToHead.slice(0, 15);
+  }
+  if(headToHead.length != 0) {
+    var team1Won = headToHead.filter(item => item.winner.id == team1Id).length;
+    var team2Won = headToHead.filter(item => item.winner.id != team1Id).length;
+    return {"team1": (team1Won / headToHead.length), "team2": (team2Won / headToHead.length)};
   } else {
     return {"team1": 0.5, "team2": 0.5};
   }

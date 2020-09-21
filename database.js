@@ -119,9 +119,9 @@ class EZBETDatabase {
 
               if(this.portfolio[historyId][matchId].outcome.name === this.portfolio[historyId][matchId].betOnTeam) {
                 if(this.portfolio[historyId][matchId].team1.name === this.portfolio[historyId][matchId].betOnTeam) {
-                  this.balance += this.portfolio[historyId][matchId].betAmount * parseFloat(this.portfolio[historyId][matchId].bettingData.actualBettingOdds.bettingOddsTeam1).toFixed(2);
+                  this.balance += this.portfolio[historyId][matchId].betAmount * parseFloat(this.portfolio[historyId][matchId].bettingData.actualBettingOdds.bettingOddsTeam1).toFixed(2) - this.portfolio[historyId][matchId].betAmount;
                 } else {
-                  this.balance += this.portfolio[historyId][matchId].betAmount * parseFloat(this.portfolio[historyId][matchId].bettingData.actualBettingOdds.bettingOddsTeam2).toFixed(2);
+                  this.balance += this.portfolio[historyId][matchId].betAmount * parseFloat(this.portfolio[historyId][matchId].bettingData.actualBettingOdds.bettingOddsTeam2).toFixed(2) - this.portfolio[historyId][matchId].betAmount;
                 }
               } else {
                 this.balance -= this.portfolio[historyId][matchId].betAmount;
@@ -199,16 +199,16 @@ class EZBETDatabase {
         if(match.outcome != null) {
           if(match.outcome.name === match.betOnTeam) {
             if(match.team1.name === match.betOnTeam) {
-              currentBalance += match.betAmount * parseFloat(match.bettingData.actualBettingOdds.bettingOddsTeam1).toFixed(2);
+              currentBalance += match.betAmount * parseFloat(match.bettingData.actualBettingOdds.bettingOddsTeam1).toFixed(2) - match.betAmount;
             } else {
-              currentBalance += match.betAmount * parseFloat(match.bettingData.actualBettingOdds.bettingOddsTeam2).toFixed(2);
+              currentBalance += match.betAmount * parseFloat(match.bettingData.actualBettingOdds.bettingOddsTeam2).toFixed(2) - match.betAmount;
             }
           } else {
             currentBalance -= match.betAmount;
           }
         }
       }
-      retVal.push({x: new Date(parseInt(dateKeys[i])), y: currentBalance});
+      retVal.push({x: new Date(parseInt(dateKeys[i])), y: parseFloat(currentBalance.toFixed(2))});
       prevBalance = currentBalance;
     }
     return retVal;
@@ -228,9 +228,9 @@ class EZBETDatabase {
         if(this.portfolio[dateKey][matchKey].outcome != null) {
           if(this.portfolio[dateKey][matchKey].outcome.name === this.portfolio[dateKey][matchKey].betOnTeam) {
             if(this.portfolio[dateKey][matchKey].team1.name === this.portfolio[dateKey][matchKey].betOnTeam) {
-              balance += this.portfolio[dateKey][matchKey].betAmount * parseFloat(this.portfolio[dateKey][matchKey].bettingData.actualBettingOdds.bettingOddsTeam1).toFixed(2);
+              balance += this.portfolio[dateKey][matchKey].betAmount * parseFloat(this.portfolio[dateKey][matchKey].bettingData.actualBettingOdds.bettingOddsTeam1).toFixed(2) - this.portfolio[dateKey][matchKey].betAmount;
             } else {
-              balance += this.portfolio[dateKey][matchKey].betAmount * parseFloat(this.portfolio[dateKey][matchKey].bettingData.actualBettingOdds.bettingOddsTeam2).toFixed(2);
+              balance += this.portfolio[dateKey][matchKey].betAmount * parseFloat(this.portfolio[dateKey][matchKey].bettingData.actualBettingOdds.bettingOddsTeam2).toFixed(2) - this.portfolio[dateKey][matchKey].betAmount;
             }
           } else {
             balance -= this.portfolio[dateKey][matchKey].betAmount;
@@ -250,8 +250,8 @@ class EZBETDatabase {
     if(actualBettingOdds == false) {
       return;
     } else {
-      actualBettingOdds.convertedOddsTeam1 = parseFloat((100 / (actualBettingOdds.bettingOddsTeam2 * 106.38)).toFixed(2));
-      actualBettingOdds.convertedOddsTeam2 = parseFloat((100 / (actualBettingOdds.bettingOddsTeam1 * 106.38)).toFixed(2));
+      actualBettingOdds.convertedOddsTeam1 = parseFloat((100 / (actualBettingOdds.bettingOddsTeam1 * 106.38)).toFixed(2));
+      actualBettingOdds.convertedOddsTeam2 = parseFloat((100 / (actualBettingOdds.bettingOddsTeam2 * 106.38)).toFixed(2));
       this.history[date][match.matchID].bettingData.actualBettingOdds = actualBettingOdds;
     }
   }
